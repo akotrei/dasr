@@ -1,4 +1,4 @@
-# dasr
+# dast
 **Main Data Structures and Algorithms for ANSI C Programming Language**
 
 # what data structures this lib contains

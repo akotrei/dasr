@@ -1,0 +1,15 @@
+---
+Language: Cpp
+IndentWidth: 4
+AlignAfterOpenBracket: Align
+BreakBeforeBraces: Allman
+ReflowComments: true
+PenaltyReturnTypeOnItsOwnLine: 1000
+PointerAlignment: Left
+AlignConsecutiveDeclarations: true
+IndentCaseLabels: true
+
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false

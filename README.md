@@ -18,7 +18,7 @@
 ## Interfaces
 
 1. **allocator** (memory allocation, reallocation, freeing)
-    * current implementations (include/allocator/allocator_std.h): dast_allocator_std (just a wrapper over glibc malloc, free, realloc)
+    * `include/allocator/allocator_std.h`: dast_allocator_std (just a wrapper over glibc malloc, free, realloc)
 2. **iterator** (allows to iterate over structure that implements this interface)
 
 ## Utils

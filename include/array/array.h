@@ -31,7 +31,7 @@ dast_array_t* dast_array_init(void*             memory,
                               unsigned long     initial_capacity,
                               float             factor,
                               dast_allocator_t* allocator,
-                              void* (*cpy_f)(void* obj, void* memory),
+                              void (*cpy_f)(void* obj, void* memory),
                               void (*del_f)(void* obj));
 
 /* Does the same as @dast_array_init except using @allocator to allocate memory
@@ -41,12 +41,22 @@ dast_array_t* dast_array_new(unsigned long     obj_size,
                              unsigned long     prealloc_size,
                              float             factor,
                              dast_allocator_t* allocator,
-                             void* (*cpy_f)(void* obj, void* memory),
+                             void (*cpy_f)(void* obj, void* memory),
                              void (*del_f)(void* obj));
 
 void dast_array_release(dast_array_t* array);
 
 void dast_array_delete(dast_array_t* array);
+
+dast_array_t dast_array_copy(dast_array_t* array, void* memory);
+
+dast_array_t* dast_array_clone(dast_array_t*     array,
+                               dast_allocator_t* allocator);
+
+dast_array_t dast_array_deepcopy(dast_array_t* array, void* memory);
+
+dast_array_t* dast_array_deepclone(dast_array_t*     array,
+                                   dast_allocator_t* allocator);
 
 void* dast_array_begin(dast_array_t* array);
 
@@ -57,12 +67,6 @@ void dast_array_insert(dast_array_t* array, void* obj, unsigned long index);
 void dast_array_append(dast_array_t* array, void* obj);
 
 void dast_array_clear(dast_array_t* array);
-
-dast_array_t* dast_array_copy(dast_array_t* array, void* memory, int is_deep);
-
-dast_array_t* dast_array_clone(dast_array_t*     array,
-                               dast_allocator_t* allocator,
-                               int               is_deep);
 
 unsigned long dast_array_count(dast_array_t* array);
 

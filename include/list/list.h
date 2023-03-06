@@ -11,13 +11,22 @@ unsigned long dast_list_sizeof();
 dast_list_t* dast_list_init(void*             memory,
                             dast_allocator_t* allocator,
                             unsigned long     obj_size,
-                            void* (*cpy_f)(void* obj, void* memory),
+                            void (*cpy_f)(void* obj, void* memory),
                             void (*del_f)(void* obj));
 
 dast_list_t* dast_list_new(dast_allocator_t* allocator,
                            unsigned long     obj_size,
-                           void* (*cpy_f)(void* obj, void* memory),
+                           void (*cpy_f)(void* obj, void* memory),
                            void (*del_f)(void* obj));
+
+dast_list_t dast_array_copy(dast_list_t* list, void* memory);
+
+dast_list_t* dast_array_clone(dast_list_t* list, dast_allocator_t* allocator);
+
+dast_list_t dast_array_deepcopy(dast_list_t* list, void* memory);
+
+dast_list_t* dast_array_deepclone(dast_list_t*      list,
+                                  dast_allocator_t* allocator);
 
 void dast_list_release(dast_list_t* list);
 
@@ -30,12 +39,6 @@ void dast_list_append(dast_list_t* list, void* obj);
 void dast_list_prepend(dast_list_t* list, void* obj);
 
 void dast_list_clear(dast_list_t* list);
-
-dast_list_t* dast_array_copy(dast_list_t* list, void* memory, int is_deep);
-
-dast_list_t* dast_array_clone(dast_list_t*      list,
-                              dast_allocator_t* allocator,
-                              int               is_deep);
 
 void dast_list_insert(dast_list_t* list, void* obj, unsigned long index);
 

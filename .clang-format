@@ -4,7 +4,7 @@ IndentWidth: 4
 AlignAfterOpenBracket: Align
 BreakBeforeBraces: Allman
 ReflowComments: true
-PenaltyReturnTypeOnItsOwnLine: 1000
+PenaltyReturnTypeOnItsOwnLine: 100000
 PointerAlignment: Left
 AlignConsecutiveDeclarations: true
 IndentCaseLabels: true
@@ -13,3 +13,5 @@ BinPackArguments: false
 BinPackParameters: false
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
+
+ColumnLimit: 80

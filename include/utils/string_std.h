@@ -5,5 +5,7 @@ void cmp
 unsigned long len
 int find
 int startswith
+int endstswith
+
 
 #endif /* __DAST_STRING_STD_H__ */

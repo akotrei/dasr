@@ -4,7 +4,7 @@
 #include "interface/iallocator.h"
 #include "interface/iiterator.h"
 
-typedef dast_tree_t dast_tree_t;
+typedef struct _dast_tree_t dast_tree_t;
 
 /* Returns number of bytes that a @dast_tree_t instance needs */
 unsigned long dast_tree_sizeof();

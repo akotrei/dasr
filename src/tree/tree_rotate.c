@@ -38,7 +38,7 @@ void dast_tree_rotate_right(dast_tree_t* tree, dast_knot_t* x)
     {
         tree->root = y;
     }
-    else if (x = x->parent->right)
+    else if (x == x->parent->right)
     {
         x->parent->right = y;
     }

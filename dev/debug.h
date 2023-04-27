@@ -2,6 +2,7 @@
 #define __DAST_DEBUG_H__
 
 #include <stdio.h>
+#include <assert.h>
 
 #ifdef DEBUG
 #define DEBUG_PRINT(fmt, args...)                                              \

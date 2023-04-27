@@ -3,6 +3,8 @@
 
 #include "interface/iallocator.h"
 
+typedef struct _dast_knot_t dast_knot_t;
+
 /* @dast_knot_t type is responsible for accessing to left, right and parent
  * knots nad keeping itself color. A user data is kept directly behind this data
  * type instance memory location:
@@ -35,6 +37,8 @@ typedef struct _dast_tree_t
 
     dast_knot_t* root;
 } dast_tree_t;
+
+void dast_tree_knots_free(dast_iallocator_t* allocator, dast_knot_t* knot);
 
 /* Rotates to the left @tree around @x:
  *

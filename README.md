@@ -1,5 +1,6 @@
-# dast
-**Main Data Structures And Algorithms For ANSI C Programming Language**
+# **dast**
+
+## **Fudamental Data Structures And Algorithms For ANSI C**
 
 ## Data structures
 
@@ -24,5 +25,5 @@
 
 1. **cmp** (functions for objects comparing: pointers, integer, floats, ascii strings)
 2. **cpy** (functions for objects copying: only shallow)
-2. **hash** (functions for hash calculating: pointers, integer, floats, ascii strings)
-
+3. **hash** (functions for hash calculating: pointers, integers, floats, ascii strings)
+4. **allocator** (base allocator that implements iallocator (wrapper around malloc free and realloc))

@@ -71,12 +71,12 @@ clean:
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #		lib
-OBJ_ALL = $(ALLOCATOR_OBJ) $(TREE_OBJ)
-LIB_BUILD: $(OBJ_ALL)
+OBJ_ALL: ALLOCATOR_OBJ_BUILD TREE_OBJ_BUILD
+LIB_BUILD: OBJ_ALL
 ifeq '$(BUILD_TYPE)' 'shared'
 	$(COMPILER) $(CFLAGS) $(CLIBFLAGS) -o $(BUILD_DIR)/lib$(LIBNAME).so $(OBJ_ALL)
 else ifeq '$(BUILD_TYPE)' 'static'
-	ar rc $(BUILD_DIR)/lib$(LIBNAME).a $(OBJ_ALL)
+	ar rc $(BUILD_DIR)/lib$(LIBNAME).a $(ALLOCATOR_OBJ) $(TREE_OBJ)
 	ranlib $(BUILD_DIR)/lib$(LIBNAME).a
 else
 $(error you must use 'shared' or 'static' for BUILD_TYPE flag)

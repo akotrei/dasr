@@ -7,7 +7,7 @@
 void dast_tree_add(dast_tree_t* tree, void* obj)
 {
     dast_cmp_f cmp = tree->cmp;
-    int is_more;
+    int is_l_more_than_r;
     dast_knot_t* knot;
     dast_knot_t** root = &(tree->root);
     dast_knot_t* parent = 0;
@@ -16,14 +16,14 @@ void dast_tree_add(dast_tree_t* tree, void* obj)
     while (*root)
     {
         parent = (*root);
-        is_more = cmp((char*)(*root) + sizeof(dast_knot_t), obj);
-        if (is_more >= 0)
+        is_l_more_than_r = cmp((char*)(parent) + sizeof(dast_knot_t), obj);
+        if (is_l_more_than_r >= 0)
         {
-            root = &((*root)->left);
+            root = &(parent->left);
         }
         else
         {
-            root = &((*root)->right);
+            root = &(parent->right);
         }
     }
 

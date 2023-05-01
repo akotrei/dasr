@@ -34,8 +34,18 @@ int main(int argc, char** arcv)
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
 
     // dast_tree_add
+    int a = 3;
+    int b = 5, c = 2, d=4, f=0;
+    
+    dast_tree_add(tree, &b);
+    dast_tree_add(tree, &d);
+    dast_tree_add(tree, &a);
+    dast_tree_add(tree, &c);
+    dast_tree_add(tree, &f);
 
     dast_tree_free(tree);
+
+    
 
     return 0;
 }

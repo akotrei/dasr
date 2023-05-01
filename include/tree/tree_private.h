@@ -39,7 +39,7 @@ typedef struct _dast_tree_t
     dast_knot_t* root;
 } dast_tree_t;
 
-void dast_tree_knots_free(dast_iallocator_t* allocator, dast_knot_t* knot);
+void dast_tree_knots_free(dast_tree_t* tree, dast_knot_t* knot);
 
 /* Rotates to the left @tree around @x:
  *

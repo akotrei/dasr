@@ -14,4 +14,4 @@ BinPackParameters: false
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 
-ColumnLimit: 80
+ColumnLimit: 120

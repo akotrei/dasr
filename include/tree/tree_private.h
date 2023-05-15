@@ -3,6 +3,7 @@
 
 #include "interface/iallocator.h"
 #include "utils/cmp.h"
+#include "utils/mem.h"
 
 typedef struct _dast_knot_t dast_knot_t;
 
@@ -27,10 +28,10 @@ typedef struct _dast_tree_t
     dast_cmp_f cmp;
     /* A copy function to copy an object before being added to the tree or when
      * the tree going to be copying deeply */
-    void (*cpy_f)(void* obj, void* memory);
+    dast_cpy_f cpy;
     /* A delete function to be invoked each time when the tree delete an object
      * or the tree going to be deletet itself */
-    void (*del_f)(void* obj);
+    dast_del_f del;
 
     unsigned long      obj_size;
     unsigned long      length;
@@ -39,9 +40,7 @@ typedef struct _dast_tree_t
     dast_knot_t* root;
 } dast_tree_t;
 
-void dast_tree_knots_free(dast_tree_t* tree, dast_knot_t* knot);
-
-/* Rotates to the left @tree around @x:
+/* Rotates to the left @tree around @x.right:
  *
  *          [p]                    [p]
  *           |                      |
@@ -53,7 +52,7 @@ void dast_tree_knots_free(dast_tree_t* tree, dast_knot_t* knot);
  */
 void dast_tree_rotate_left(dast_tree_t* tree, dast_knot_t* x);
 
-/* Rotates to the right @tree around @x:
+/* Rotates to the right @tree around @x.left:
  *
  *          [p]                    [p]
  *           |                      |
@@ -64,5 +63,7 @@ void dast_tree_rotate_left(dast_tree_t* tree, dast_knot_t* x);
  *          [b]   [c]        [a]   [b]
  */
 void dast_tree_rotate_right(dast_tree_t* tree, dast_knot_t* x);
+
+void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
 
 #endif /* __DAST_TREE_PRIVATE_H__ */

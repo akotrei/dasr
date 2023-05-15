@@ -1,37 +1,38 @@
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 #include "utils/cmp.h"
-
-#include "../dev/debug.h"
+#include "utils/mem.h"
 
 void dast_tree_add(dast_tree_t* tree, void* obj)
 {
-    dast_cmp_f cmp = tree->cmp;
-    int is_more; /* is more or equal*/
-    dast_knot_t* knot;
-    dast_knot_t** root = &(tree->root);
-    dast_knot_t* parent = 0;
+    dast_cmp_f         cmp = tree->cmp;
+    dast_cpy_f         cpy = tree->cpy;
+    dast_knot_t*       knot_new;
+    dast_knot_t**      curr = &(tree->root);
+    dast_knot_t*       parent = 0;
     dast_iallocator_t* allocator = tree->allocator;
 
-    while (*root)
+    while (*curr)
     {
-        parent = (*root);
-        is_more = cmp((char*)(parent) + sizeof(dast_knot_t), obj);
-        if (is_more >= 0)
+        parent = *curr;
+        if (cmp((char*)(parent) + sizeof(dast_knot_t), obj) >= 0)
         {
-            root = &(parent->left);
+            curr = &(parent->left);
         }
         else
         {
-            root = &(parent->right);
+            curr = &(parent->right);
         }
     }
 
-    knot = allocator->allocate(allocator, sizeof(dast_knot_t) + tree->obj_size);
-    knot->left = 0;
-    knot->right = 0;
-    knot->parent = parent;
-    tree->cpy_f(obj, (char*)(knot) + sizeof(dast_knot_t));
+    knot_new = allocator->allocate(allocator, sizeof(dast_knot_t) + tree->obj_size);
+    knot_new->is_black = 0;
+    knot_new->left = 0;
+    knot_new->right = 0;
+    knot_new->parent = parent;
+    cpy(obj, (char*)(knot_new) + sizeof(dast_knot_t));
 
-    (*root) = knot;
+    *curr = knot_new;
+
+    dast_tree_add_fix_up(tree, knot_new);
 }

@@ -37,7 +37,7 @@ dast_array_t* dast_array_init(void*             memory,
                               unsigned long     obj_size,
                               unsigned long     initial_capacity,
                               float             factor,
-                              dast_allocator_t* allocator,
+                              dast_iallocator_t* allocator,
                               void (*cpy_f)(void* obj, void* memory),
                               void (*del_f)(void* obj));
 
@@ -49,7 +49,7 @@ dast_array_t* dast_array_init(void*             memory,
 dast_array_t* dast_array_new(unsigned long     obj_size,
                              unsigned long     prealloc_size,
                              float             factor,
-                             dast_allocator_t* allocator,
+                             dast_iallocator_t* allocator,
                              void (*cpy_f)(void* obj, void* memory),
                              void (*del_f)(void* obj));
 

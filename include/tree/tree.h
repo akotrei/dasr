@@ -4,6 +4,7 @@
 #include "interface/iallocator.h"
 #include "interface/iiterator.h"
 #include "utils/cmp.h"
+#include "utils/mem.h"
 
 typedef struct _dast_tree_t dast_tree_t;
 
@@ -13,15 +14,15 @@ unsigned long dast_tree_sizeof();
 dast_tree_t* dast_tree_init(void*              memory,
                             dast_iallocator_t* allocator,
                             unsigned long      obj_size,
-                            dast_cmp_f cmp,
-                            void (*cpy_f)(void* obj, void* memory),
-                            void (*del_f)(void* obj));
+                            dast_cmp_f         cmp,
+                            dast_cpy_f         cpy,
+                            dast_del_f         del);
 
 dast_tree_t* dast_tree_new(dast_iallocator_t* allocator,
                            unsigned long      obj_size,
-                           dast_cmp_f cmp,
-                           void (*cpy_f)(void* obj, void* memory),
-                           void (*del_f)(void* obj));
+                           dast_cmp_f         cmp,
+                           dast_cpy_f         cpy,
+                           dast_del_f         del);
 
 void dast_tree_free(dast_tree_t* tree);
 

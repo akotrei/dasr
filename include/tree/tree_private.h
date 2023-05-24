@@ -35,7 +35,7 @@ typedef struct _dast_tree_t
 
     unsigned long      obj_size;
     unsigned long      length;
-    dast_iallocator_t* allocator;
+    dast_allocator_t* allocator;
 
     dast_knot_t* root;
 } dast_tree_t;

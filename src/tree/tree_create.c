@@ -4,7 +4,7 @@
 unsigned long dast_tree_sizeof() { return sizeof(dast_tree_t); }
 
 dast_tree_t* dast_tree_init(void*              memory,
-                            dast_iallocator_t* allocator,
+                            dast_allocator_t* allocator,
                             unsigned long      obj_size,
                             dast_cmp_f         cmp,
                             dast_cpy_f         cpy,
@@ -21,7 +21,7 @@ dast_tree_t* dast_tree_init(void*              memory,
     return tree;
 }
 
-dast_tree_t* dast_tree_new(dast_iallocator_t* allocator,
+dast_tree_t* dast_tree_new(dast_allocator_t* allocator,
                            unsigned long      obj_size,
                            dast_cmp_f         cmp,
                            dast_cpy_f         cpy,

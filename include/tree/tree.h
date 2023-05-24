@@ -12,13 +12,13 @@ typedef struct _dast_tree_t dast_tree_t;
 unsigned long dast_tree_sizeof();
 
 dast_tree_t* dast_tree_init(void*              memory,
-                            dast_iallocator_t* allocator,
+                            dast_allocator_t* allocator,
                             unsigned long      obj_size,
                             dast_cmp_f         cmp,
                             dast_cpy_f         cpy,
                             dast_del_f         del);
 
-dast_tree_t* dast_tree_new(dast_iallocator_t* allocator,
+dast_tree_t* dast_tree_new(dast_allocator_t* allocator,
                            unsigned long      obj_size,
                            dast_cmp_f         cmp,
                            dast_cpy_f         cpy,
@@ -32,9 +32,11 @@ void dast_tree_clear(dast_tree_t* tree);
 
 unsigned long dast_tree_length(dast_tree_t* tree);
 
-dast_iiterator_t* dast_tree_iterator_new(dast_tree_t* tree);
+unsigned long dast_tree_height(dast_tree_t* tree);
 
-void dast_tree_iterator_delete(dast_iiterator_t* iterator);
+dast_iterator_t* dast_tree_iterator_new(dast_tree_t* tree);
+
+void dast_tree_iterator_delete(dast_iterator_t* iterator);
 
 dast_tree_t* dast_tree_clone(dast_tree_t* tree);
 

@@ -4,6 +4,6 @@
 #include "interface/iallocator.h"
 
 unsigned long     dast_allocator_sizeof();
-dast_iallocator_t* dast_allocator_init(void* memory);
+dast_allocator_t* dast_allocator_init(void* memory);
 
 #endif /* __DAST_ALLOCATOR_H__ */

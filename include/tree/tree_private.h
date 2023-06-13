@@ -2,6 +2,7 @@
 #define __DAST_TREE_PRIVATE_H__
 
 #include "interface/iallocator.h"
+#include "interface/iiterator.h"
 #include "utils/cmp.h"
 #include "utils/mem.h"
 
@@ -33,12 +34,24 @@ typedef struct _dast_tree_t
      * or the tree going to be deletet itself */
     dast_del_f del;
 
-    unsigned long      obj_size;
-    unsigned long      length;
+    unsigned long     obj_size;
+    unsigned long     count;
     dast_allocator_t* allocator;
 
     dast_knot_t* root;
 } dast_tree_t;
+
+
+typedef enum _dast_tree_iterator_last_visited_e {LEFT, PARENT, RIGHT} dast_tree_iterator_last_visited_e;
+
+typedef struct _dast_tree_iterator_t
+{
+    dast_iterator_t iterator;
+    dast_knot_t* knot;
+    dast_tree_iterator_last_visited_e last_visited;
+    
+} dast_tree_iterator_t;
+
 
 /* Rotates to the left @tree around @x.right:
  *
@@ -65,5 +78,10 @@ void dast_tree_rotate_left(dast_tree_t* tree, dast_knot_t* x);
 void dast_tree_rotate_right(dast_tree_t* tree, dast_knot_t* x);
 
 void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
+
+unsigned long dast_knot_height(dast_knot_t* knot);
+
+void* dast_tree_iterator_next(void* self);
+void dast_tree_iterator_reset(void* self);
 
 #endif /* __DAST_TREE_PRIVATE_H__ */

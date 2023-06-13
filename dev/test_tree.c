@@ -126,6 +126,7 @@ void test_add_fix_up_left_left_nil()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -152,6 +153,7 @@ void test_add_fix_up_left_left_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -179,6 +181,7 @@ void test_add_fix_up_left_left_nil_deeper()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -207,6 +210,7 @@ void test_add_fix_up_left_left_red_deeper()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -237,6 +241,7 @@ void test_add_fix_up_left_left_nil_deeper2()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -270,6 +275,7 @@ void test_add_fix_up_left_right_nil()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -304,6 +310,7 @@ void test_add_fix_up_left_right_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -340,6 +347,7 @@ void test_add_fix_up_right_left_black()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -377,6 +385,7 @@ void test_add_fix_up_right_left_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -415,6 +424,7 @@ void test_add_fix_up_right_right_black()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -458,6 +468,7 @@ void test_add_fix_up_right_right_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }
@@ -504,6 +515,7 @@ void test_add_fix_up_all_cases()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("is_balanced: %d, height: %d\n", is_balanced, height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
     dast_tree_free(tree);
 }

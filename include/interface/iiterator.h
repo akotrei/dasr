@@ -3,8 +3,7 @@
 
 typedef struct _dast_iterator_t
 {
-    int (*next)(void* self);
-    void* (*current)(void* self);
+    void* (*next)(void* self);
     void (*reset)(void* self);
 } dast_iterator_t;
 

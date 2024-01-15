@@ -9,8 +9,6 @@ typedef struct _dast_list_node_t
 {
     dast_list_node_t* node_next;
     dast_list_node_t* node_prev;
-    void*             data;
-
 } _dast_list_node_t;
 
 typedef struct _dast_list_t

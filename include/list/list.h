@@ -34,13 +34,14 @@ void dast_list_clear(dast_list_t* list);
 
 void dast_list_insert(dast_list_t* list, void* obj, unsigned long index);
 
-void* dast_list_pop(dast_list_t* list, void* memory);
+void* dast_list_pop(dast_list_t* list);
 
-void* dast_list_popleft(dast_list_t* list, void* memory);
+void* dast_list_popleft(dast_list_t* list);
 
-int  dast_list_remove(dast_list_t* list,
-                      void*        obj,
-                      int (*cmp_f)(void* l, void* r));
+void* dast_list_search(dast_list_t* list, int (*cmp_f)(void* l, void* r));
+
+void  dast_list_remove(dast_list_t* list, void* obj);
+
 void dast_list_reverse(dast_list_t* list);
 
 #endif /* __DAST_LIST_H__ */

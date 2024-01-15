@@ -20,13 +20,13 @@ static void _deallocate(void* self, void* ptr)
 
 unsigned long dast_allocator_sizeof()
 {
-    return sizeof(dast_allocator_t);
+    return sizeof(dast_iallocator_t);
 }
 
-dast_allocator_t* dast_allocator_init(void* memory)
+dast_iallocator_t* dast_allocator_init(void* memory)
 {
-    dast_allocator_t *allocator;
-    allocator = (dast_allocator_t*)memory;
+    dast_iallocator_t *allocator;
+    allocator = (dast_iallocator_t*)memory;
 
     allocator->allocate = _allocate;
     allocator->reallocate = _reallocate;

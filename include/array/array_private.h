@@ -9,7 +9,7 @@ typedef struct _dast_array_t
     unsigned long     elems;
     unsigned long     capacity;
     float             factor;
-    dast_allocator_t* allocator;
+    dast_iallocator_t* allocator;
 
     void* (*cpy_f)(void* obj, void* memory);
     void (*del_f)(void* obj);

@@ -10,7 +10,7 @@ typedef struct _dast_table_t dast_table_t;
 unsigned long dast_table_sizeof();
 
 dast_table_t* dast_table_init(void*             memory,
-                              dast_allocator_t* allocator,
+                              dast_iallocator_t* allocator,
                               unsigned long     key_size,
                               unsigned long     val_size,
                               void (*cpy_key_f)(void* obj, void* memory),
@@ -20,7 +20,7 @@ dast_table_t* dast_table_init(void*             memory,
                               unsigned long(hash_key_f)(void* key),
                               int (*cmp_key_f)(void* l, void* r));
 
-dast_table_t* dast_table_new(dast_allocator_t* allocator,
+dast_table_t* dast_table_new(dast_iallocator_t* allocator,
                              unsigned long     key_size,
                              unsigned long     val_size,
                              void (*cpy_f)(void* obj, void* memory),
@@ -37,12 +37,12 @@ void dast_table_delete(dast_table_t* table);
 dast_table_t dast_table_copy(dast_table_t* table, void* memory);
 
 dast_table_t* dast_table_clone(dast_table_t*     table,
-                               dast_allocator_t* allocator);
+                               dast_iallocator_t* allocator);
 
 dast_table_t dast_table_deepcopy(dast_table_t* table, void* memory);
 
 dast_table_t* dast_table_deepclone(dast_table_t*     table,
-                                   dast_allocator_t* allocator);
+                                   dast_iallocator_t* allocator);
 
 unsigned long dast_table_length(dast_table_t* table);
 

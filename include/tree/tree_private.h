@@ -28,30 +28,33 @@ typedef struct _dast_tree_t
     /* A compare function to compare objects being added to the tree */
     dast_cmp_f cmp;
     /* A copy function to copy an object before being added to the tree or when
-     * the tree going to be copying deeply */
+     * the tree going to be copying pr cloning deeply */
     dast_cpy_f cpy;
     /* A delete function to be invoked each time when the tree delete an object
      * or the tree going to be deletet itself */
     dast_del_f del;
 
     unsigned long     obj_size;
-    unsigned long     count;
-    dast_allocator_t* allocator;
+    unsigned long     size;
+    dast_iallocator_t* allocator;
 
     dast_knot_t* root;
 } dast_tree_t;
 
-
-typedef enum _dast_tree_iterator_last_visited_e {LEFT, PARENT, RIGHT} dast_tree_iterator_last_visited_e;
+typedef enum _dast_tree_iterator_last_visited_t
+{
+    LEFT,
+    PARENT,
+    RIGHT
+} dast_tree_iterator_last_visited_t;
 
 typedef struct _dast_tree_iterator_t
 {
-    dast_iterator_t iterator;
-    dast_knot_t* knot;
-    dast_tree_iterator_last_visited_e last_visited;
-    
-} dast_tree_iterator_t;
+    dast_iterator_t                   iterator;
+    dast_knot_t*                      knot;
+    dast_tree_iterator_last_visited_t last_visited;
 
+} dast_tree_iterator_t;
 
 /* Rotates to the left @tree around @x.right:
  *
@@ -82,6 +85,6 @@ void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
 unsigned long dast_knot_height(dast_knot_t* knot);
 
 void* dast_tree_iterator_next(void* self);
-void dast_tree_iterator_reset(void* self);
+void  dast_tree_iterator_reset(void* self);
 
 #endif /* __DAST_TREE_PRIVATE_H__ */

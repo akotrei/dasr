@@ -19,20 +19,20 @@ unsigned long dast_tree_sizeof();
  * objects a and b and returns 1 if a > b, 0 if a = b and -1 if a < b;
  * @cpy is a copy function that is used everytime when new an item is being added;
  * @del is a deletion function that is used everytime when an item is being deleted */
-dast_tree_t* dast_tree_init(void*             dst,
+dast_tree_t* dast_tree_init(void*              dst,
                             dast_iallocator_t* allocator,
-                            unsigned long     obj_size,
-                            dast_cmp_f        cmp,
-                            dast_cpy_f        cpy,
-                            dast_del_f        del);
+                            dast_u64_t         obj_size,
+                            dast_cmp_t         cmp,
+                            dast_cpy_t         cpy,
+                            dast_del_t         del);
 
 /* Does the same as @dast_tree_init except that it returns a new instance of @dast_tree_t on a memory
  * that is internally allocated by @allocator */
 dast_tree_t* dast_tree_new(dast_iallocator_t* allocator,
-                           unsigned long     obj_size,
-                           dast_cmp_f        cmp,
-                           dast_cpy_f        cpy,
-                           dast_del_f        del);
+                           dast_u64_t         obj_size,
+                           dast_cmp_t         cmp,
+                           dast_cpy_t         cpy,
+                           dast_del_t         del);
 
 /* Should be used to deinitialize a @dast_tree_t instance that was created by @dast_tree_init
  * @tree is a @dast_tree_t instance to be deinitialized */
@@ -44,11 +44,11 @@ void dast_tree_denew(dast_tree_t* tree);
 
 /* Creates a copy of @tree that is being wrriten to @dst (@dst should point to at least
  * @dast_tree_sizeof() bytes) */
-void dast_tree_copy(dast_tree_t* tree, void* dst);
+void dast_tree_copy(dast_tree_t* tree, void* dst, dast_u64_t size);
 
 /* Does the same as @dast_tree_copy but additionally copies (uses objects copy function)
  * trees objects to the new tree */
-void dast_tree_deepcopy(dast_tree_t* tree, void* dst);
+void dast_tree_deepcopy(dast_tree_t* tree, void* dst, dast_u64_t size);
 
 /* Does the same as @dast_tree_copy except that it returns a new instance of @dast_tree_t on a memory
  * that is internally allocated by @tree allocator */
@@ -62,13 +62,14 @@ dast_tree_t* dast_tree_deepclone(dast_tree_t* tree);
 void dast_tree_clear(dast_tree_t* tree);
 
 /* Returns number of elements in the @tree */
-unsigned long dast_tree_size(dast_tree_t* tree);
+dast_u64_t dast_tree_size(dast_tree_t* tree);
 
 /* Returns height of the @tree */
-unsigned long dast_tree_height(dast_tree_t* tree);
+dast_u64_t dast_tree_height(dast_tree_t* tree);
 
 /* Creates a new iterator for the @tree to iterate by elements */
-dast_iterator_t* dast_tree_iterator_new(dast_tree_t* tree);
+dast_iterator_t* dast_tree_forward_iterator_new(dast_tree_t* tree);
+dast_iterator_t* dast_tree_backward_iterator_new(dast_tree_t* tree);
 
 /* Should be used to delete a tree iterator created by @dast_iterator_t
  * Note: lifetime of the tree iterator should not be more than a tree
@@ -84,7 +85,7 @@ void dast_tree_add(dast_tree_t* tree, void* obj);
  * Returns a pointer to the searched element or 0 if the element not presented in the tree */
 void* dast_tree_search(dast_tree_t* tree, void* obj);
 
-/* Removes the @obj from the @tree. @obj should be a pointer from @dast_tree_search */
+/* Removes the @obj from the @tree. @obj can be a pointer from @dast_tree_search */
 void dast_tree_remove(dast_tree_t* tree, void* obj);
 
 /* Returs a smallest elemets from the @tree */

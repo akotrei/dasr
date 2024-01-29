@@ -1,31 +1,19 @@
 #include "utils/allocator.h"
+#include "ntype.h"
 
 #include <stdlib.h>
 
-static void* _allocate(void* self, unsigned long size)
-{
-    return malloc(size);
-}
+static void* _allocate(void* self, unsigned long size) { return malloc(size); }
 
-static void* _reallocate(void* self, void* ptr, unsigned long size)
-{
-    return realloc(ptr, size);
+static void* _reallocate(void* self, void* ptr, unsigned long size) { return realloc(ptr, size); }
 
-}
+static void _deallocate(void* self, void* ptr) { free(ptr); }
 
-static void _deallocate(void* self, void* ptr)
-{
-    free(ptr);
-}
-
-unsigned long dast_allocator_sizeof()
-{
-    return sizeof(dast_iallocator_t);
-}
+dast_u64_t dast_allocator_sizeof() { return sizeof(dast_iallocator_t); }
 
 dast_iallocator_t* dast_allocator_init(void* memory)
 {
-    dast_iallocator_t *allocator;
+    dast_iallocator_t* allocator;
     allocator = (dast_iallocator_t*)memory;
 
     allocator->allocate = _allocate;

@@ -47,8 +47,8 @@ endif
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Specify linker to use the library:
-LFLAGS  = -L$(CURRENT_DIR)/$(BUILD_DIR)
-IFLAGS	= -I$(CURRENT_DIR)/$(INCLUDE_DIR)
+LFLAGS = -L$(CURRENT_DIR)/$(BUILD_DIR)
+IFLAGS = -I$(CURRENT_DIR)/$(INCLUDE_DIR)
 
 
 # Directories definitions:
@@ -60,48 +60,36 @@ $(shell mkdir -p $(BUILD_DIR))
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#     targets
-.PHONY: clean
-.PHONY: all
-
-all: LIB_BUILD;
-clean:
-	rm -f $(BUILD_DIR)/*
+#		DAST
+DAST_H = $(shell find $(INCLUDE_DIR) -name '*.h')
+DAST_C = $(shell find $(SRC_DIR) -name '*.c')
+DAST_O = $(DAST_C:.c=.o)
+%.o: %.c $(DAST_H)
+	$(COMPILER) $(CFLAGS) $(COBJFLAGS) $(IFLAGS) -c -o $@ $<
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#     targets
+.PHONY: clean
+.PHONY: build
+clean:
+	rm -f $(BUILD_DIR)/*
+	find . -type f -iname \*.o -delete
+build: DAST_LIB_BUILD
+
+
+################### FOR TESTING ###################
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #		lib
-OBJ_ALL: ALLOCATOR_OBJ_BUILD TREE_OBJ_BUILD
-LIB_BUILD: OBJ_ALL
+DAST_LIB_BUILD: $(DAST_O)
 ifeq '$(BUILD_TYPE)' 'shared'
-	$(COMPILER) $(CFLAGS) $(CLIBFLAGS) -o $(BUILD_DIR)/lib$(LIBNAME).so $(OBJ_ALL)
+	$(COMPILER) $(CFLAGS) $(CLIBFLAGS) -o $(BUILD_DIR)/lib$(LIBNAME).so $(DAST_O)
 else ifeq '$(BUILD_TYPE)' 'static'
-	ar rc $(BUILD_DIR)/lib$(LIBNAME).a $(ALLOCATOR_OBJ) $(TREE_OBJ)
+	ar rc $(BUILD_DIR)/lib$(LIBNAME).a $(DAST_O)
 	ranlib $(BUILD_DIR)/lib$(LIBNAME).a
 else
 $(error you must use 'shared' or 'static' for BUILD_TYPE flag)
 endif
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#		allocator
-ALLOCATOR_H = $(INCLUDE_DIR)/utils/allocator.h $(INCLUDE_DIR)/interface/iallocator.h
-ALLOCATOR_C = $(SRC_DIR)/utils/allocator.c
-ALLOCATOR_OBJ = $(BUILD_DIR)/allocator.o
-ALLOCATOR_OBJ_BUILD: $(ALLOCATOR_OBJ)
-$(ALLOCATOR_OBJ): $(BUILD_DIR)/%.o: $(SRC_DIR)/utils/%.c $(ALLOCATOR_H)
-	$(COMPILER) $(CFLAGS) $(COBJFLAGS) $(IFLAGS) -c $< -o $@
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#		tree
-TREE_H = $(wildcard $(INCLUDE_DIR)/tree/*.h) $(INCLUDE_DIR)/interface/iallocator.h\
-$(INCLUDE_DIR)/interface/iiterator.h
-TREE_C = $(wildcard $(SRC_DIR)/tree/*.c)
-TREE_OBJ = $(subst $(SRC_DIR)/tree/,$(BUILD_DIR)/,$(subst .c,.o,$(TREE_C)))
-TREE_OBJ_BUILD: $(TREE_OBJ)
-$(TREE_OBJ): $(BUILD_DIR)/%.o: $(SRC_DIR)/tree/%.c $(TREE_H)
-	$(COMPILER) $(CFLAGS) $(COBJFLAGS) $(IFLAGS) -c $< -o $@
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -115,6 +103,7 @@ $(DEV_MAIN_OBJ): $(DEV_MAIN_C)
 $(DEV_MAIN_EXE): $(DEV_MAIN_OBJ)
 	$(COMPILER) $(CFLAGS) -o $(DEV_MAIN_EXE) $(DEV_MAIN_OBJ)
 
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #		dev/test_allocator.c
 DEV_ALLOCATOR_C = $(DEV_DIR)/test_allocator.c
@@ -126,6 +115,7 @@ $(DEV_ALLOCATOR_OBJ): $(DEV_ALLOCATOR_C)
 $(DEV_ALLOCATOR_EXE): $(DEV_ALLOCATOR_OBJ)
 	$(COMPILER) $(CFLAGS) -o $(DEV_ALLOCATOR_EXE) $(DEV_ALLOCATOR_OBJ) \
 	$(LFLAGS) -l$(LIBNAME)
+
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #		dev/test_tree.c

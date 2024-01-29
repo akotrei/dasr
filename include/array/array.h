@@ -41,8 +41,8 @@ dast_array_t* dast_array_new(dast_u64_t         obj_size,
                              dast_u64_t         prealloc_size,
                              dast_f32_t         factor,
                              dast_iallocator_t* allocator,
-                             dast_cpy_f         cpy,
-                             dast_del_f         del);
+                             dast_cpy_t         cpy,
+                             dast_del_t         del);
 
 /* Deletes the array instance, should be used for such array that was created via @dast_array_init
  *
@@ -53,10 +53,10 @@ void dast_array_deinit(dast_array_t* array);
 /* Does the same as @dast_array_deinit but shoukd be used if the array was created via @dast_array_new*/
 void dast_array_denew(dast_array_t* array);
 
-dast_array_t  dast_array_copy(dast_array_t* array, void* memory);
-dast_array_t* dast_array_clone(dast_array_t* array, dast_iallocator_t* allocator);
-dast_array_t  dast_array_deepcopy(dast_array_t* array, void* memory);
-dast_array_t* dast_array_deepclone(dast_array_t* array, dast_iallocator_t* allocator);
+void          dast_array_copy(dast_array_t* array, void* memory, dast_u64_t size);
+void          dast_array_deepcopy(dast_array_t* array, void* memory, dast_u64_t size);
+dast_array_t* dast_array_clone(dast_array_t* array);
+dast_array_t* dast_array_deepclone(dast_array_t* array);
 
 dast_u64_t dast_array_count(dast_array_t* array);
 
@@ -65,18 +65,17 @@ void* dast_array_end(dast_array_t* array);
 void* dast_array_index(dast_array_t* array, dast_u64_t index);
 
 void dast_array_clear(dast_array_t* array);
-void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index);
 void dast_array_append(dast_array_t* array, void* obj);
+void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index);
 void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n);
 
-void dast_array_pop(dast_array_t* array, void* memory);
-void dast_array_erase(dast_array_t* array, dast_u64_t index, void* memory);
-int  dast_array_remove(dast_array_t* array, dast_u64_t index);
+void dast_array_erase(dast_array_t* array, dast_u64_t index);
+int  dast_array_remove(dast_array_t* array, dast_u64_t index, void* memory);
 
 void       dast_array_reverse(dast_array_t* array);
-void       dast_array_sort(dast_array_t* array, dast_cmp_f);
-dast_u64_t dast_array_find(dast_array_t* array, void* obj, dast_cmp_f);
-void*      dast_array_min(dast_array_t* array, dast_cmp_f);
-void*      dast_array_max(dast_array_t* array, dast_cmp_f);
+void       dast_array_sort(dast_array_t* array, dast_cmp_t);
+dast_u64_t dast_array_find(dast_array_t* array, void* obj, dast_cmp_t);
+void*      dast_array_min(dast_array_t* array, dast_cmp_t);
+void*      dast_array_max(dast_array_t* array, dast_cmp_t);
 
 #endif /* __DAST_ARRAY_H__ */

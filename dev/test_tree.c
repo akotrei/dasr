@@ -1,26 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 #include "utils/allocator.h"
+#include "utils/mem.h"
+#include "ntype.h"
 #include "debug.h"
+
 
 int cmp(void* o1, void* o2)
 {
     return *(int*)o1 - *(int*)o2;
-}
-
-void cpy(void* o, void* dst)
-{
-    /* DEBUG_PRINT("cpy: %d\n", *(int*)o); */
-    *(int*)dst = *(int*)o;
-}
-
-void del(void* o)
-{
-    /* DEBUG_PRINT("o: %d, c: %d\n", *(int*)o, ((dast_knot_t*)((char*)o - sizeof(dast_knot_t)))->is_black); */
 }
 
 int height(dast_knot_t *root) {
@@ -105,17 +98,27 @@ void TreePrinter(dast_tree_t* tree) {
     }
 }
 
+void print_tree(dast_knot_t *knot)
+{
+    if (knot)
+    {
+        print_tree(knot->left);
+        printf("v: %d\n", *(int*)((char*)knot + sizeof(dast_knot_t)));
+        print_tree(knot->right);
+    }
+}
+
 void test_add_fix_up_left_left_nil()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int a5 = 5, a4 = 4, a3 = 3;
@@ -128,20 +131,20 @@ void test_add_fix_up_left_left_nil()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_red()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int a2 = 2, a3 = 3, a4 = 4, a5 = 5;
@@ -155,20 +158,20 @@ void test_add_fix_up_left_left_red()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_nil_deeper()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int a1 = 1, a2 = 2, a3 = 3, a4 = 4, a5 = 5;
@@ -183,20 +186,20 @@ void test_add_fix_up_left_left_nil_deeper()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_red_deeper()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am1 = -1, a1 = 1, a2 = 2, a3 = 3, a4 = 4, a5 = 5;
@@ -212,20 +215,20 @@ void test_add_fix_up_left_left_red_deeper()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_nil_deeper2()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -3, am2 = -2, am1 = -1, a1 = 1, a2 = 2, a3 = 3, a4 = 4, a5 = 5;
@@ -243,20 +246,20 @@ void test_add_fix_up_left_left_nil_deeper2()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_right_nil()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -277,20 +280,20 @@ void test_add_fix_up_left_right_nil()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_right_red()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -312,20 +315,20 @@ void test_add_fix_up_left_right_red()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_left_black()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -349,20 +352,20 @@ void test_add_fix_up_right_left_black()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_left_red()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -387,20 +390,20 @@ void test_add_fix_up_right_left_red()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_right_black()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -426,20 +429,20 @@ void test_add_fix_up_right_right_black()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_right_red()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int am3 = -30, am2 = -20, am1 = -10, a1 = 10, a2 = 20, a3 = 30, a4 = 40, a5 = 50;
@@ -470,20 +473,20 @@ void test_add_fix_up_right_right_red()
     DEBUG_PRINT("%d\n", is_balanced);
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_all_cases()
 {
     unsigned long alloc_size = dast_allocator_sizeof();
     char mem_allocator[alloc_size];
-    dast_allocator_t* allocator = dast_allocator_init(mem_allocator);
+    dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
     char mem_tree[tree_size];
 
     dast_tree_t* tree;
-    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, cpy, del);
+    tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
 
     // dast_tree_add
     int h0 = 0, h1 = 1000, h2 = 2000, h3 = 3000, h4 = 4000;
@@ -512,38 +515,61 @@ void test_add_fix_up_all_cases()
     dast_tree_add(tree, &c3);
     dast_tree_add(tree, &c4);
 
-    TreePrinter(tree);
+    // print_tree(tree->root);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("is_balanced: %d, height: %d\n", is_balanced, height(tree->root));
     DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
 
-    dast_tree_free(tree);
+    dast_iterator_t* tree_iter;
+    tree_iter = dast_tree_forward_iterator_new(tree);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
+        
+        if (!obj) { break; }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    printf("\n");
+    dast_tree_iterator_delete(tree_iter);
+
+    tree_iter = dast_tree_backward_iterator_new(tree);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
+        
+        if (!obj) { break; }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    printf("\n");
+    dast_tree_iterator_delete(tree_iter);
+
+    dast_tree_deinit(tree);
 }
 
 int main(int argc, char** arcv)
 {
-    test_add_fix_up_left_left_nil();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_left_red();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_left_nil_deeper();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_left_red_deeper();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_left_nil_deeper2();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_right_nil();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_left_right_red();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_right_left_black();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_right_left_red();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_right_right_black();
-    DEBUG_PRINT("==========\n");
-    test_add_fix_up_right_right_red();
-    DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_left_nil();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_left_red();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_left_nil_deeper();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_left_red_deeper();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_left_nil_deeper2();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_right_nil();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_left_right_red();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_right_left_black();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_right_left_red();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_right_right_black();
+    // DEBUG_PRINT("==========\n");
+    // test_add_fix_up_right_right_red();
+    // DEBUG_PRINT("==========\n");
     test_add_fix_up_all_cases();
     DEBUG_PRINT("==========\n");
 

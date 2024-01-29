@@ -5,9 +5,9 @@
 
 void dast_tree_add(dast_tree_t* tree, void* obj)
 {
-    dast_cmp_f         cmp = tree->cmp;
-    dast_cpy_f         cpy = tree->cpy;
-    dast_del_f         del = tree->del;
+    dast_cmp_t         cmp = tree->cmp;
+    dast_cpy_t         cpy = tree->cpy;
+    dast_del_t         del = tree->del;
     dast_knot_t*       knot_new;
     dast_knot_t**      curr = &(tree->root);
     dast_knot_t*       parent = 0;
@@ -29,7 +29,7 @@ void dast_tree_add(dast_tree_t* tree, void* obj)
         else
         {
             del((char*)(parent) + sizeof(dast_knot_t));
-            cpy(obj, (char*)(parent) + sizeof(dast_knot_t));
+            cpy(obj, (char*)(parent) + sizeof(dast_knot_t), tree->obj_size);
             return;
         }
     }
@@ -39,10 +39,10 @@ void dast_tree_add(dast_tree_t* tree, void* obj)
     knot_new->left = 0;
     knot_new->right = 0;
     knot_new->parent = parent;
-    cpy(obj, (char*)(knot_new) + sizeof(dast_knot_t));
+    cpy(obj, (char*)(knot_new) + sizeof(dast_knot_t), tree->obj_size);
 
     *curr = knot_new;
-    tree->size ++;
+    tree->size++;
 
     dast_tree_add_fix_up(tree, knot_new);
 }

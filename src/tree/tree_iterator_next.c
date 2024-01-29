@@ -1,35 +1,79 @@
-#include "tree/tree.h"
 #include "tree/tree_private.h"
 
-void* dast_tree_iterator_next(void* self)
+void* dast_tree_forward_iterator_next(void* self)
 {
     dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
-    dast_knot_t* knot = tree_iterator->knot;
+    dast_knot_t *         out, *tmp;
+    out = tmp = tree_iterator->curr;
 
-    if (!knot)
+    if (!out)
     {
-        return 0;
+        return out;
     }
 
-    switch (tree_iterator->last_visited)
+    if (tmp->right)
     {
-        case LEFT:
-            tree_iterator->knot = tree_iterator->knot->parent;
-            tree_iterator->last_visited = PARENT;
-            break;
-        case PARENT:
-            if (tree_iterator->knot->right)
+        tmp = tmp->right;
+        while (tmp->left)
+        {
+            tmp = tmp->left;
+        }
+        tree_iterator->curr = tmp;
+    }
+    else if (tmp->parent)
+    {
+        if (tmp == tmp->parent->left)
+        {
+            tree_iterator->curr = tmp->parent;
+        }
+        else
+        {
+            while (tmp->parent && tmp->parent->right == tmp)
             {
-                tree_iterator->knot = tree_iterator->knot->right;
+                tmp = tmp->parent;
             }
-            tree_iterator->last_visited = RIGHT;
-            break;
-        case RIGHT:
-            break;
-
-        default:
-            break;
+            tree_iterator->curr = tmp->parent;
+        }
     }
 
-    return (char*)knot + sizeof(dast_knot_t);
+    return (char*)out + sizeof(dast_knot_t);
+}
+
+void* dast_tree_backward_iterator_next(void* self)
+{
+    dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
+    dast_knot_t *         out, *tmp;
+    out = tmp = tree_iterator->curr;
+
+    if (!out)
+    {
+        return out;
+    }
+
+    if (tmp->left)
+    {
+        tmp = tmp->left;
+        while (tmp->right)
+        {
+            tmp = tmp->right;
+        }
+        tree_iterator->curr = tmp;
+    }
+    else if (tmp->parent)
+    {
+        if (tmp == tmp->parent->right)
+        {
+            tree_iterator->curr = tmp->parent;
+        }
+        else
+        {
+            while (tmp->parent && tmp->parent->left == tmp)
+            {
+                tmp = tmp->parent;
+            }
+            tree_iterator->curr = tmp->parent;
+        }
+    }
+
+    return (char*)out + sizeof(dast_knot_t);
 }

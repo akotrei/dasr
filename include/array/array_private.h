@@ -5,10 +5,10 @@
 
 typedef struct _dast_array_t
 {
-    void*             data;
-    unsigned long     elems;
-    unsigned long     capacity;
-    float             factor;
+    void*              data;
+    unsigned long      elems;
+    unsigned long      capacity;
+    float              factor;
     dast_iallocator_t* allocator;
 
     void* (*cpy_f)(void* obj, void* memory);

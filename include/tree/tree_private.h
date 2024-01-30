@@ -1,8 +1,8 @@
 #ifndef __DAST_TREE_PRIVATE_H__
 #define __DAST_TREE_PRIVATE_H__
 
-#include "interface/iallocator.h"
-#include "interface/iiterator.h"
+#include "interface/allocator.h"
+#include "interface/iterator.h"
 #include "utils/cmp.h"
 #include "utils/mem.h"
 
@@ -34,9 +34,9 @@ typedef struct _dast_tree_t
      * or the tree going to be deletet itself */
     dast_del_t del;
 
-    dast_u64_t         obj_size;
-    dast_u64_t         size;
-    dast_iallocator_t* allocator;
+    dast_u64_t        obj_size;
+    dast_u64_t        size;
+    dast_allocator_t* allocator;
 
     dast_knot_t* root;
 } dast_tree_t;

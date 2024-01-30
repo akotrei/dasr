@@ -1,8 +1,8 @@
 #ifndef __DAST_TREE_H__
 #define __DAST_TREE_H__
 
-#include "interface/iallocator.h"
-#include "interface/iiterator.h"
+#include "interface/allocator.h"
+#include "interface/iterator.h"
 #include "utils/cmp.h"
 #include "utils/mem.h"
 
@@ -19,20 +19,20 @@ unsigned long dast_tree_sizeof();
  * objects a and b and returns 1 if a > b, 0 if a = b and -1 if a < b;
  * @cpy is a copy function that is used everytime when new an item is being added;
  * @del is a deletion function that is used everytime when an item is being deleted */
-dast_tree_t* dast_tree_init(void*              dst,
-                            dast_iallocator_t* allocator,
-                            dast_u64_t         obj_size,
-                            dast_cmp_t         cmp,
-                            dast_cpy_t         cpy,
-                            dast_del_t         del);
+dast_tree_t* dast_tree_init(void*             dst,
+                            dast_allocator_t* allocator,
+                            dast_u64_t        obj_size,
+                            dast_cmp_t        cmp,
+                            dast_cpy_t        cpy,
+                            dast_del_t        del);
 
 /* Does the same as @dast_tree_init except that it returns a new instance of @dast_tree_t on a memory
  * that is internally allocated by @allocator */
-dast_tree_t* dast_tree_new(dast_iallocator_t* allocator,
-                           dast_u64_t         obj_size,
-                           dast_cmp_t         cmp,
-                           dast_cpy_t         cpy,
-                           dast_del_t         del);
+dast_tree_t* dast_tree_new(dast_allocator_t* allocator,
+                           dast_u64_t        obj_size,
+                           dast_cmp_t        cmp,
+                           dast_cpy_t        cpy,
+                           dast_del_t        del);
 
 /* Should be used to deinitialize a @dast_tree_t instance that was created by @dast_tree_init
  * @tree is a @dast_tree_t instance to be deinitialized */

@@ -5,14 +5,14 @@
 
 void dast_tree_add(dast_tree_t* tree, void* obj)
 {
-    dast_cmp_t         cmp = tree->cmp;
-    dast_cpy_t         cpy = tree->cpy;
-    dast_del_t         del = tree->del;
-    dast_knot_t*       knot_new;
-    dast_knot_t**      curr = &(tree->root);
-    dast_knot_t*       parent = 0;
-    dast_iallocator_t* allocator = tree->allocator;
-    int                compare_result;
+    dast_cmp_t        cmp = tree->cmp;
+    dast_cpy_t        cpy = tree->cpy;
+    dast_del_t        del = tree->del;
+    dast_knot_t*      knot_new;
+    dast_knot_t**     curr = &(tree->root);
+    dast_knot_t*      parent = 0;
+    dast_allocator_t* allocator = tree->allocator;
+    int               compare_result;
 
     while (*curr)
     {

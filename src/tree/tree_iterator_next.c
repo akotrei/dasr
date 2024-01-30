@@ -35,6 +35,10 @@ void* dast_tree_forward_iterator_next(void* self)
             tree_iterator->curr = tmp->parent;
         }
     }
+    else
+    {
+        tree_iterator->curr = 0;
+    }
 
     return (char*)out + sizeof(dast_knot_t);
 }
@@ -73,6 +77,10 @@ void* dast_tree_backward_iterator_next(void* self)
             }
             tree_iterator->curr = tmp->parent;
         }
+    }
+    else
+    {
+        tree_iterator->curr = 0;
     }
 
     return (char*)out + sizeof(dast_knot_t);

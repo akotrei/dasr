@@ -82,7 +82,7 @@ void dast_tree_add(dast_tree_t* tree, void* obj);
 
 /* Searchs an element in the @tree
  * @obj is an element to be searched
- * Returns a pointer to the searched element or 0 if the element not presented in the tree */
+ * Returns a pointer to the searched element or 0 if the element does not present in the tree */
 void* dast_tree_search(dast_tree_t* tree, void* obj);
 
 /* Removes the @obj from the @tree. @obj can be a pointer from @dast_tree_search */

@@ -1,34 +1,32 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 
+#include "debug.h"
+#include "ntype.h"
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 #include "utils/allocator.h"
 #include "utils/mem.h"
-#include "ntype.h"
-#include "debug.h"
 
+int cmp(void* o1, void* o2) { return *(int*)o1 - *(int*)o2; }
 
-int cmp(void* o1, void* o2)
+int height(dast_knot_t* root)
 {
-    return *(int*)o1 - *(int*)o2;
-}
-
-int height(dast_knot_t *root) {
     if (root == NULL)
         return 0;
     return fmax(height(root->left), height(root->right)) + 1;
 }
- 
-int getcol(int h) {
+
+int getcol(int h)
+{
     if (h == 1)
         return 1;
     return getcol(h - 1) + getcol(h - 1) + 1;
 }
 
-int isBalancedUtil(dast_knot_t *root, int *maxh, int *minh)
+int isBalancedUtil(dast_knot_t* root, int* maxh, int* minh)
 {
     // DEBUG_PRINT("maxh minh: %d %d\n", *maxh, *minh);
     // Base case
@@ -38,37 +36,38 @@ int isBalancedUtil(dast_knot_t *root, int *maxh, int *minh)
         *minh = 0;
         return 1;
     }
- 
+
     int lmxh, lmnh; // To store max and min heights of left subtree
     int rmxh, rmnh; // To store max and min heights of right subtree
- 
+
     // Check if left subtree is balanced, also set lmxh and lmnh
     if (!isBalancedUtil(root->left, &lmxh, &lmnh))
         return 0;
- 
+
     // Check if right subtree is balanced, also set rmxh and rmnh
     if (!isBalancedUtil(root->right, &rmxh, &rmnh))
         return 0;
- 
+
     // Set the max and min heights of this node for the parent call
     *maxh = fmax(lmxh, rmxh) + 1;
     *minh = fmin(lmnh, rmnh) + 1;
- 
+
     // See if this node is balanced
-    if ((*maxh) <= 2*(*minh))
+    if ((*maxh) <= 2 * (*minh))
         return 1;
- 
+
     return 0;
 }
- 
+
 // A wrapper over isBalancedUtil()
-int isBalanced(dast_tree_t *tree)
+int isBalanced(dast_tree_t* tree)
 {
     int maxh, minh;
     return isBalancedUtil(tree->root, &maxh, &minh);
 }
- 
-void printTree(int **M, int **C, dast_knot_t *root, int col, int row, int height) {
+
+void printTree(int** M, int** C, dast_knot_t* root, int col, int row, int height)
+{
     if (root == NULL)
         return;
     M[row][col] = *(int*)((char*)root + sizeof(dast_knot_t));
@@ -76,19 +75,23 @@ void printTree(int **M, int **C, dast_knot_t *root, int col, int row, int height
     printTree(M, C, root->left, col - pow(2, height - 2), row + 1, height - 1);
     printTree(M, C, root->right, col + pow(2, height - 2), row + 1, height - 1);
 }
- 
-void TreePrinter(dast_tree_t* tree) {
-    int h = height(tree->root);
-    int col = getcol(h);
-    int **M = (int**)malloc(sizeof(int*) * h);
-    int **C = (int**)malloc(sizeof(int*) * h);
-    for (int i = 0; i < h; i++) {
+
+void TreePrinter(dast_tree_t* tree)
+{
+    int   h = height(tree->root);
+    int   col = getcol(h);
+    int** M = (int**)malloc(sizeof(int*) * h);
+    int** C = (int**)malloc(sizeof(int*) * h);
+    for (int i = 0; i < h; i++)
+    {
         M[i] = (int*)malloc(sizeof(int) * col);
         C[i] = (int*)malloc(sizeof(int) * col);
     }
     printTree(M, C, tree->root, col / 2, 0, h);
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < col; j++) {
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
             if (M[i][j] == 0)
                 printf("  ");
             else
@@ -98,7 +101,7 @@ void TreePrinter(dast_tree_t* tree) {
     }
 }
 
-void print_tree(dast_knot_t *knot)
+void print_tree(dast_knot_t* knot)
 {
     if (knot)
     {
@@ -110,12 +113,12 @@ void print_tree(dast_knot_t *knot)
 
 void test_add_fix_up_left_left_nil()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -129,19 +132,19 @@ void test_add_fix_up_left_left_nil()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_red()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -156,19 +159,19 @@ void test_add_fix_up_left_left_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_nil_deeper()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -184,19 +187,19 @@ void test_add_fix_up_left_left_nil_deeper()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_red_deeper()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -213,19 +216,19 @@ void test_add_fix_up_left_left_red_deeper()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_left_nil_deeper2()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -244,19 +247,19 @@ void test_add_fix_up_left_left_nil_deeper2()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_right_nil()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -278,19 +281,19 @@ void test_add_fix_up_left_right_nil()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_left_right_red()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -313,19 +316,19 @@ void test_add_fix_up_left_right_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_left_black()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -350,19 +353,19 @@ void test_add_fix_up_right_left_black()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_left_red()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -388,19 +391,19 @@ void test_add_fix_up_right_left_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_right_black()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -427,19 +430,19 @@ void test_add_fix_up_right_right_black()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_right_right_red()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -471,19 +474,19 @@ void test_add_fix_up_right_right_red()
     TreePrinter(tree);
     int is_balanced = isBalanced(tree);
     DEBUG_PRINT("%d\n", is_balanced);
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
     dast_tree_deinit(tree);
 }
 
 void test_add_fix_up_all_cases()
 {
-    unsigned long alloc_size = dast_allocator_sizeof();
-    char mem_allocator[alloc_size];
+    unsigned long      alloc_size = dast_allocator_sizeof();
+    char               mem_allocator[alloc_size];
     dast_iallocator_t* allocator = dast_allocator_init(mem_allocator);
 
     unsigned long tree_size = dast_tree_sizeof();
-    char mem_tree[tree_size];
+    char          mem_tree[tree_size];
 
     dast_tree_t* tree;
     tree = dast_tree_init(mem_tree, allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
@@ -515,33 +518,55 @@ void test_add_fix_up_all_cases()
     dast_tree_add(tree, &c3);
     dast_tree_add(tree, &c4);
 
+    dast_tree_clear(tree);
+    printf("tree->root: %p\n", tree->root);
+
+    int v = 0;
+    for (; v < 10000000; v++)
+    {
+        dast_tree_add(tree, &v);
+    }
+
     // print_tree(tree->root);
     int is_balanced = isBalanced(tree);
+    printf("size: %ld, height: %ld\n", dast_tree_size(tree), dast_tree_height(tree));
     DEBUG_PRINT("is_balanced: %d, height: %d\n", is_balanced, height(tree->root));
-    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree) ,height(tree->root));
+    DEBUG_PRINT("HEIGHT: %lu %d\n", dast_tree_height(tree), height(tree->root));
 
-    dast_iterator_t* tree_iter;
-    tree_iter = dast_tree_forward_iterator_new(tree);
-    while (1)
+    int   to_search = 12345678;
+    void* search_res;
+    search_res = dast_tree_search(tree, &to_search);
+    if (search_res)
     {
-        void* obj = tree_iter->next(tree_iter);
-        
-        if (!obj) { break; }
-        printf("v: %d, ", *(int*)(obj));
+        printf("search_res: %d\n", *(int*)(search_res));
     }
-    printf("\n");
-    dast_tree_iterator_delete(tree_iter);
+    else
+    {
+        printf("search_res: NOT FOUND\n");
+    }
 
-    tree_iter = dast_tree_backward_iterator_new(tree);
-    while (1)
-    {
-        void* obj = tree_iter->next(tree_iter);
-        
-        if (!obj) { break; }
-        printf("v: %d, ", *(int*)(obj));
-    }
-    printf("\n");
-    dast_tree_iterator_delete(tree_iter);
+    // dast_iterator_t* tree_iter;
+    // tree_iter = dast_tree_forward_iterator_new(tree);
+    // while (1)
+    // {
+    //     void* obj = tree_iter->next(tree_iter);
+
+    //     if (!obj) { break; }
+    //     // printf("v: %d, ", *(int*)(obj));
+    // }
+    // printf("\n");
+    // dast_tree_iterator_delete(tree_iter);
+
+    // tree_iter = dast_tree_backward_iterator_new(tree);
+    // while (1)
+    // {
+    //     void* obj = tree_iter->next(tree_iter);
+
+    //     if (!obj) { break; }
+    //     // printf("v: %d, ", *(int*)(obj));
+    // // }
+    // printf("\n");
+    // dast_tree_iterator_delete(tree_iter);
 
     dast_tree_deinit(tree);
 }

@@ -72,6 +72,7 @@ DAST_O = $(DAST_C:.c=.o)
 #     targets
 .PHONY: clean
 .PHONY: build
+
 clean:
 	rm -f $(BUILD_DIR)/*
 	find . -type f -iname \*.o -delete
@@ -123,7 +124,7 @@ DEV_TREE_C = $(DEV_DIR)/test_tree.c
 DEV_TREE_OBJ = $(BUILD_DIR)/test_tree.o
 DEV_TREE_EXE = $(BUILD_DIR)/test_tree
 DEV_TREE: $(DEV_TREE_EXE)
-$(DEV_TREE_OBJ): $(DEV_TREE_C) $(TREE_C) $(TREE_H)
+$(DEV_TREE_OBJ): $(DEV_TREE_C) $(TREE_C) $(TREE_H) $(DAST_O)
 	$(COMPILER) $(CFLAGS) $(IFLAGS) -c $(DEV_TREE_C) -o $(DEV_TREE_OBJ)
 $(DEV_TREE_EXE): $(DEV_TREE_OBJ)
 	$(COMPILER) $(CFLAGS) -o $(DEV_TREE_EXE) $(DEV_TREE_OBJ) \

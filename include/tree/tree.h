@@ -64,6 +64,9 @@ void dast_tree_clear(dast_tree_t* tree);
 /* Returns number of elements in the @tree */
 dast_u64_t dast_tree_size(dast_tree_t* tree);
 
+/* Returns object size of the @tree */
+dast_u64_t dast_tree_obj_size(dast_tree_t* tree);
+
 /* Returns height of the @tree */
 dast_u64_t dast_tree_height(dast_tree_t* tree);
 
@@ -89,10 +92,10 @@ void* dast_tree_search(dast_tree_t* tree, void* obj);
  * Returns 1 if @obj has been found and deleted on 0 otherwise */
 dast_u8_t dast_tree_remove(dast_tree_t* tree, void* obj);
 
-/* Returs a smallest elemets from the @tree */
+/* Returs a smallest elemet from the @tree */
 void* dast_tree_min(dast_tree_t* tree);
 
-/* Returs a largest elemets from the @tree */
+/* Returs a largest elemet from the @tree */
 void* dast_tree_max(dast_tree_t* tree);
 
 #endif /* __DAST_TREE_H__ */

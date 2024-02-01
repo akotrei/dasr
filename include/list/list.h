@@ -1,9 +1,9 @@
 #ifndef __DAST_LIST_H__
 #define __DAST_LIST_H__
 
+#include "cmp.h"
 #include "interface/allocator.h"
 #include "ntype.h"
-#include "cmp.h"
 
 typedef struct _dast_list_t dast_list_t;
 
@@ -27,24 +27,26 @@ void          dast_list_delete(dast_list_t* list);
 
 dast_u64_t dast_list_size(dast_list_t* list);
 dast_u64_t dast_list_obj_size(dast_list_t* list);
-void dast_list_clear(dast_list_t* list);
+void       dast_list_clear(dast_list_t* list);
 
-void dast_list_append(dast_list_t* list, void* obj);
-void dast_list_prepend(dast_list_t* list, void* obj);
-void dast_list_insert(dast_list_t* list, void* obj, dast_u64_t index);
+void      dast_list_append(dast_list_t* list, void* obj);
+void      dast_list_prepend(dast_list_t* list, void* obj);
+dast_u8_t dast_list_insert(dast_list_t* list, void* obj, dast_u64_t index);
 
 void* dast_list_front(dast_list_t* list);
 void* dast_list_back(dast_list_t* list);
 void* dast_list_index(dast_list_t* list, dast_u64_t index);
 
-void dast_list_remove_front(dast_list_t* list);
-void dast_list_remove_back(dast_list_t* list);
-void dast_list_remove_index(dast_list_t* list, dast_u64_t index);
-void dast_list_lremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
-void dast_list_rremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
+void      dast_list_remove_front(dast_list_t* list);
+void      dast_list_remove_back(dast_list_t* list);
+dast_u8_t dast_list_remove_index(dast_list_t* list, dast_u64_t index);
+void      dast_list_lremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
+void      dast_list_rremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
 
-void* dast_list_lfind(dast_list_t* list, dast_cmp_t cmp);
-void* dast_list_rfind(dast_list_t* list, dast_cmp_t cmp);
+void*     dast_list_lfind(dast_list_t* list, dast_cmp_t cmp);
+void*     dast_list_rfind(dast_list_t* list, dast_cmp_t cmp);
+dast_u8_t dast_list_lfind_index(dast_list_t* list, dast_cmp_t cmp, dast_u64_t* index);
+dast_u8_t dast_list_rfind_index(dast_list_t* list, dast_cmp_t cmp, dast_u64_t* index);
 
 void dast_list_reverse(dast_list_t* list);
 

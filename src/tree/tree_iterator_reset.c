@@ -11,5 +11,4 @@ void dast_tree_iterator_reset(void* self)
     {
         tree_iterator->curr = dast_knot_max(tree_iterator->tree->root);
     }
-    
 }

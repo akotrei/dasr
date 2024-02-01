@@ -9,7 +9,7 @@
 typedef struct _dast_tree_t dast_tree_t;
 
 /* Returns number of bytes that a @dast_tree_t instance needs */
-unsigned long dast_tree_sizeof();
+dast_u64_t dast_tree_sizeof();
 
 /* Initialises a new instance of @dast_tree_t on @dst memory, (@dst should point
  * to at least @dast_tree_sizeof() bytes).
@@ -85,8 +85,9 @@ void dast_tree_add(dast_tree_t* tree, void* obj);
  * Returns a pointer to the searched element or 0 if the element does not present in the tree */
 void* dast_tree_search(dast_tree_t* tree, void* obj);
 
-/* Removes the @obj from the @tree. @obj can be a pointer from @dast_tree_search */
-void dast_tree_remove(dast_tree_t* tree, void* obj);
+/* Removes the @obj from the @tree
+ * Returns 1 if @obj has been found and deleted on 0 otherwise */
+dast_u8_t dast_tree_remove(dast_tree_t* tree, void* obj);
 
 /* Returs a smallest elemets from the @tree */
 void* dast_tree_min(dast_tree_t* tree);

@@ -518,14 +518,14 @@ void test_add_fix_up_all_cases()
     dast_tree_add(tree, &c3);
     dast_tree_add(tree, &c4);
 
-    dast_tree_clear(tree);
-    printf("tree->root: %p\n", tree->root);
+    // dast_tree_clear(tree);
+    // printf("tree->root: %p\n", tree->root);
 
-    int v = 0;
-    for (; v < 10000000; v++)
-    {
-        dast_tree_add(tree, &v);
-    }
+    // int v = 0;
+    // for (; v < 10000000; v++)
+    // {
+    //     dast_tree_add(tree, &v);
+    // }
 
     // print_tree(tree->root);
     int is_balanced = isBalanced(tree);
@@ -545,28 +545,63 @@ void test_add_fix_up_all_cases()
         printf("search_res: NOT FOUND\n");
     }
 
-    // dast_iterator_t* tree_iter;
-    // tree_iter = dast_tree_forward_iterator_new(tree);
-    // while (1)
-    // {
-    //     void* obj = tree_iter->next(tree_iter);
+    dast_iterator_t* tree_iter;
+    tree_iter = dast_tree_forward_iterator_new(tree);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
 
-    //     if (!obj) { break; }
-    //     // printf("v: %d, ", *(int*)(obj));
-    // }
-    // printf("\n");
-    // dast_tree_iterator_delete(tree_iter);
+        if (!obj)
+        {
+            break;
+        }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    printf("===\n");
+    tree_iter->reset(tree_iter);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
 
-    // tree_iter = dast_tree_backward_iterator_new(tree);
-    // while (1)
-    // {
-    //     void* obj = tree_iter->next(tree_iter);
+        if (!obj)
+        {
+            break;
+        }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    dast_tree_iterator_delete(tree_iter);
 
-    //     if (!obj) { break; }
-    //     // printf("v: %d, ", *(int*)(obj));
-    // // }
-    // printf("\n");
-    // dast_tree_iterator_delete(tree_iter);
+    printf("\n");
+    printf("=== === ===\n");
+
+    tree_iter = dast_tree_backward_iterator_new(tree);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
+
+        if (!obj)
+        {
+            break;
+        }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    printf("!!!\n");
+    tree_iter->reset(tree_iter);
+    while (1)
+    {
+        void* obj = tree_iter->next(tree_iter);
+
+        if (!obj)
+        {
+            break;
+        }
+        printf("v: %d, ", *(int*)(obj));
+    }
+    dast_tree_iterator_delete(tree_iter);
+
+    printf("MIN: %d\n", *(int*)dast_tree_min(tree));
+    printf("MAX: %d\n", *(int*)dast_tree_max(tree));
+    printf("dast_knot_t_size: %d\n", sizeof(dast_knot_t));
 
     dast_tree_deinit(tree);
 }

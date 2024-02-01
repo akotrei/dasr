@@ -5,7 +5,7 @@ void* dast_tree_search(dast_tree_t* tree, void* obj)
 {
     dast_cmp_t    cmp = tree->cmp;
     dast_knot_t** knot = &(tree->root);
-    int           compare_result;
+    dast_i32_t    compare_result;
 
     while (*knot)
     {

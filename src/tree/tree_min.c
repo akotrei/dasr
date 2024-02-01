@@ -5,18 +5,18 @@ void* dast_knot_min(dast_knot_t* knot)
 {
     if (knot)
     {
-        while (1)
+        while (knot->left)
         {
-            if (knot->left)
-            {
-                knot = knot->left;
-            }
-            else
-            {
-                return knot;
-            }
+            knot = knot->left;
         }
     }
-    return 0;
+    return knot;
 }
-void* dast_tree_min(dast_tree_t* tree) { return (char*)dast_knot_min(tree->root) + sizeof(dast_knot_t); }
+void* dast_tree_min(dast_tree_t* tree)
+{
+    if (!tree->root)
+    {
+        return 0;
+    }
+    return (char*)dast_knot_min(tree->root) + sizeof(dast_knot_t);
+}

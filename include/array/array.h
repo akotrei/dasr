@@ -58,23 +58,24 @@ void          dast_array_deepcopy(dast_array_t* array, void* memory, dast_u64_t 
 dast_array_t* dast_array_clone(dast_array_t* array);
 dast_array_t* dast_array_deepclone(dast_array_t* array);
 
-dast_u64_t dast_array_count(dast_array_t* array);
+dast_u64_t dast_array_size(dast_array_t* array);
+dast_u64_t dast_array_obj_size(dast_array_t* array);
+void dast_array_clear(dast_array_t* array);
 
 void* dast_array_begin(dast_array_t* array);
 void* dast_array_end(dast_array_t* array);
 void* dast_array_index(dast_array_t* array, dast_u64_t index);
 
-void dast_array_clear(dast_array_t* array);
 void dast_array_append(dast_array_t* array, void* obj);
 void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index);
 void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n);
 
-void dast_array_erase(dast_array_t* array, dast_u64_t index);
-int  dast_array_remove(dast_array_t* array, dast_u64_t index, void* memory);
+void dast_array_pop(dast_array_t* array);
+void dast_array_remove(dast_array_t* array, dast_u64_t index);
 
 void       dast_array_reverse(dast_array_t* array);
-void       dast_array_sort(dast_array_t* array, dast_cmp_t);
-dast_u64_t dast_array_find(dast_array_t* array, void* obj, dast_cmp_t);
+dast_u64_t dast_array_lfind(dast_array_t* array, void* obj, dast_cmp_t cmp);
+dast_u64_t dast_array_rfind(dast_array_t* array, void* obj, dast_cmp_t cmp);
 void*      dast_array_min(dast_array_t* array, dast_cmp_t);
 void*      dast_array_max(dast_array_t* array, dast_cmp_t);
 

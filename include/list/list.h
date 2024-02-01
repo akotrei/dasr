@@ -1,7 +1,9 @@
 #ifndef __DAST_LIST_H__
 #define __DAST_LIST_H__
 
-#include "interface/iallocator.h"
+#include "interface/allocator.h"
+#include "ntype.h"
+#include "cmp.h"
 
 typedef struct _dast_list_t dast_list_t;
 
@@ -23,23 +25,26 @@ dast_list_t*  dast_list_deepclone(dast_list_t* list, dast_allocator_t* allocator
 void          dast_list_release(dast_list_t* list);
 void          dast_list_delete(dast_list_t* list);
 
-unsigned long dast_list_length(dast_list_t* list);
-
-void dast_list_append(dast_list_t* list, void* obj);
-
-void dast_list_prepend(dast_list_t* list, void* obj);
-
+dast_u64_t dast_list_size(dast_list_t* list);
+dast_u64_t dast_list_obj_size(dast_list_t* list);
 void dast_list_clear(dast_list_t* list);
 
-void dast_list_insert(dast_list_t* list, void* obj, unsigned long index);
+void dast_list_append(dast_list_t* list, void* obj);
+void dast_list_prepend(dast_list_t* list, void* obj);
+void dast_list_insert(dast_list_t* list, void* obj, dast_u64_t index);
 
-void* dast_list_pop(dast_list_t* list);
+void* dast_list_front(dast_list_t* list);
+void* dast_list_back(dast_list_t* list);
+void* dast_list_index(dast_list_t* list, dast_u64_t index);
 
-void* dast_list_popleft(dast_list_t* list);
+void dast_list_remove_front(dast_list_t* list);
+void dast_list_remove_back(dast_list_t* list);
+void dast_list_remove_index(dast_list_t* list, dast_u64_t index);
+void dast_list_lremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
+void dast_list_rremove(dast_list_t* list, void* obj, dast_cmp_t cmp);
 
-void* dast_list_search(dast_list_t* list, int (*cmp_f)(void* l, void* r));
-
-void dast_list_remove(dast_list_t* list, void* obj);
+void* dast_list_lfind(dast_list_t* list, dast_cmp_t cmp);
+void* dast_list_rfind(dast_list_t* list, dast_cmp_t cmp);
 
 void dast_list_reverse(dast_list_t* list);
 

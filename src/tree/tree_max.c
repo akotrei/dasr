@@ -5,19 +5,19 @@ void* dast_knot_max(dast_knot_t* knot)
 {
     if (knot)
     {
-        while (1)
+        while (knot->right)
         {
-            if (knot->right)
-            {
-                knot = knot->right;
-            }
-            else
-            {
-                return knot;
-            }
+            knot = knot->right;
         }
     }
-    return 0;
+    return knot;
 }
 
-void* dast_tree_max(dast_tree_t* tree) { return (char*)dast_knot_max(tree->root) + sizeof(dast_knot_t); }
+void* dast_tree_max(dast_tree_t* tree)
+{
+    if (!tree->root)
+    {
+        return 0;
+    }
+    return (char*)dast_knot_max(tree->root) + sizeof(dast_knot_t);
+}

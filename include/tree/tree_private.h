@@ -16,8 +16,7 @@ typedef struct _dast_knot_t dast_knot_t;
  */
 typedef struct _dast_knot_t
 {
-    unsigned char is_black;
-
+    dast_u8_t    is_black;
     dast_knot_t* left;
     dast_knot_t* right;
     dast_knot_t* parent;
@@ -75,7 +74,7 @@ void dast_tree_rotate_right(dast_tree_t* tree, dast_knot_t* x);
 
 void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
 
-unsigned long dast_knot_height(dast_knot_t* knot);
+dast_u64_t dast_knot_height(dast_knot_t* knot);
 
 void* dast_tree_forward_iterator_next(void* self);
 void* dast_tree_backward_iterator_next(void* self);

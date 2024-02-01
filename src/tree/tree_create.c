@@ -1,7 +1,7 @@
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 
-unsigned long dast_tree_sizeof() { return sizeof(dast_tree_t); }
+dast_u64_t dast_tree_sizeof() { return sizeof(dast_tree_t); }
 
 dast_tree_t* dast_tree_init(void*             memory,
                             dast_allocator_t* allocator,

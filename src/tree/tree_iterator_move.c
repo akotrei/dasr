@@ -1,6 +1,6 @@
 #include "tree/tree_private.h"
 
-void* dast_tree_forward_iterator_next(void* self)
+void* dast_tree_iterator_next(void* self)
 {
     dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
     dast_knot_t *         out, *tmp;
@@ -43,7 +43,7 @@ void* dast_tree_forward_iterator_next(void* self)
     return (char*)out + sizeof(dast_knot_t);
 }
 
-void* dast_tree_backward_iterator_next(void* self)
+void* dast_tree_iterator_prev(void* self)
 {
     dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
     dast_knot_t *         out, *tmp;

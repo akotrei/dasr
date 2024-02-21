@@ -1,7 +1,7 @@
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 
-void* dast_knot_min(dast_knot_t* knot)
+dast_knot_t* dast_knot_min(dast_knot_t* knot)
 {
     if (knot)
     {

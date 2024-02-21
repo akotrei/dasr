@@ -4,6 +4,7 @@
 #include "interface/allocator.h"
 #include "interface/iterator.h"
 #include "utils/cmp.h"
+#include "utils/display.h"
 #include "utils/mem.h"
 
 typedef struct _dast_knot_t dast_knot_t;
@@ -16,10 +17,10 @@ typedef struct _dast_knot_t dast_knot_t;
  */
 typedef struct _dast_knot_t
 {
-    dast_u8_t    is_black;
     dast_knot_t* left;
     dast_knot_t* right;
     dast_knot_t* parent;
+    dast_u8_t    is_black;
 } dast_knot_t;
 
 typedef struct _dast_tree_t
@@ -45,28 +46,29 @@ typedef struct _dast_tree_iterator_t
     dast_iterator_t iterator;
     dast_tree_t*    tree;
     dast_knot_t*    curr;
+    dast_u8_t       reversed;
 
 } dast_tree_iterator_t;
 
-/* Rotates to the left @tree around @x.right:
+/* Rotates to the left @tree around @x:
  *
  *          [p]                    [p]
  *           |                      |
- *          [x]                    [y]
+ *          [y]                    [x]
  *         /   \       --->       /   \
- *       [a]   [y]              [x]   [c]
+ *       [a]   [x]              [y]   [c]
  *            /   \            /   \
  *          [b]   [c]        [a]   [b]
  */
 void dast_tree_rotate_left(dast_tree_t* tree, dast_knot_t* x);
 
-/* Rotates to the right @tree around @x.left:
+/* Rotates to the right @tree around @x:
  *
  *          [p]                    [p]
  *           |                      |
- *          [y]                    [x]
+ *          [x]                    [y]
  *         /   \       <---       /   \
- *       [a]   [x]              [y]   [c]
+ *       [a]   [y]              [x]   [c]
  *            /   \            /   \
  *          [b]   [c]        [a]   [b]
  */
@@ -76,11 +78,23 @@ void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
 
 dast_u64_t dast_knot_height(dast_knot_t* knot);
 
-void* dast_tree_forward_iterator_next(void* self);
-void* dast_tree_backward_iterator_next(void* self);
+void* dast_tree_iterator_next(void* self);
+void* dast_tree_iterator_prev(void* self);
 void  dast_tree_iterator_reset(void* self);
 
-void* dast_knot_min(dast_knot_t* knot);
-void* dast_knot_max(dast_knot_t* knot);
+dast_knot_t* dast_knot_min(dast_knot_t* knot);
+dast_knot_t* dast_knot_max(dast_knot_t* knot);
+
+void dast_tree_remove_fix_up(dast_tree_t* tree, dast_knot_t* x);
+void dast_tree_transplant(dast_tree_t* tree, dast_knot_t* x, dast_knot_t* y);
+
+char** dast_knot_print(dast_knot_t*      knot,
+                       dast_u64_t*       strings,
+                       dast_u64_t*       capacity,
+                       dast_u64_t*       width,
+                       dast_u64_t*       height,
+                       dast_u64_t*       middle,
+                       dast_allocator_t* allocator,
+                       dast_display_t    display);
 
 #endif /* __DAST_TREE_PRIVATE_H__ */

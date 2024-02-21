@@ -29,15 +29,16 @@ dast_set_t    dast_set_deepcopy(dast_set_t* set, void* memory);
 dast_set_t*   dast_set_deepclone(dast_set_t* set, dast_iallocator_t* allocator);
 void          dast_set_clear(dast_set_t* set);
 unsigned long dast_set_length(dast_set_t* set);
-dast_list_t*  dast_set_elements(dast_set_t* set);
-void*         dast_set_pop(dast_set_t* set, void* key, void* memory);
-int           dast_set_remove(dast_set_t* set, void* key);
-void          dast_set_add(dast_set_t* set, void* key);
-void          dast_set_join(dast_set_t* set, dast_set_t* another);
-void          dast_set_intersect(dast_set_t* set, dast_set_t* another);
-void          dast_set_diff(dast_set_t* set, dast_set_t* another);
-int           dast_set_is_disjoint(dast_set_t* set_left, dast_set_t* set_right);
-int           dast_set_is_subset(dast_set_t* set, dast_set_t* another);
-int           dast_set_is_superset(dast_set_t* set, dast_set_t* another);
+
+dast_list_t* dast_set_elements(dast_set_t* set);
+void*        dast_set_pop(dast_set_t* set, void* key, void* memory);
+int          dast_set_remove(dast_set_t* set, void* key);
+void         dast_set_add(dast_set_t* set, void* key);
+void         dast_set_join(dast_set_t* set, dast_set_t* another);
+void         dast_set_intersect(dast_set_t* set, dast_set_t* another);
+void         dast_set_diff(dast_set_t* set, dast_set_t* another);
+int          dast_set_is_disjoint(dast_set_t* set_left, dast_set_t* set_right);
+int          dast_set_is_subset(dast_set_t* set, dast_set_t* another);
+int          dast_set_is_superset(dast_set_t* set, dast_set_t* another);
 
 #endif /* __DAST_SET_H__ */

@@ -1,5 +1,5 @@
-#ifndef __DAST_IALLOCATOR_H__
-#define __DAST_IALLOCATOR_H__
+#ifndef __DAST_ALLOCATOR_H__
+#define __DAST_ALLOCATOR_H__
 
 #include "ntype.h"
 
@@ -10,4 +10,4 @@ typedef struct _dast_allocator_t
     void (*deallocate)(void* self, void* ptr);
 } dast_allocator_t;
 
-#endif /* __DAST_IALLOCATOR_H__ */
+#endif /* __DAST_ALLOCATOR_H__ */

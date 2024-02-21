@@ -1,7 +1,7 @@
 #include "tree/tree.h"
 #include "tree/tree_private.h"
 
-void dast_tree_deinit(dast_tree_t* tree)
+void dast_tree_destroy_from(dast_tree_t* tree)
 {
     dast_allocator_t* allocator = tree->allocator;
     dast_del_t        del = tree->del;
@@ -39,9 +39,9 @@ void dast_tree_deinit(dast_tree_t* tree)
     }
 }
 
-void dast_tree_denew(dast_tree_t* tree)
+void dast_tree_destroy(dast_tree_t* tree)
 {
     dast_allocator_t* allocator = tree->allocator;
-    dast_tree_deinit(tree);
+    dast_tree_destroy_from(tree);
     allocator->deallocate(allocator, tree);
 }

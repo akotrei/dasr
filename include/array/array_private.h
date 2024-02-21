@@ -1,18 +1,20 @@
 #ifndef __DAST_ARRAY_PRIVATE_H__
 #define __DAST_ARRAY_PRIVATE_H__
 
-#include "interface/iallocator.h"
+#include "array/array.h"
+#include "interface/allocator.h"
 
 typedef struct _dast_array_t
 {
-    void*              data;
-    unsigned long      elems;
-    unsigned long      capacity;
-    float              factor;
-    dast_iallocator_t* allocator;
+    char*             data;
+    dast_u64_t        elems;
+    dast_u64_t        elem_size;
+    dast_u64_t        capacity;
+    dast_f64_t        factor;
+    dast_allocator_t* allocator;
 
-    void* (*cpy_f)(void* obj, void* memory);
-    void (*del_f)(void* obj);
-} _dast_array_t;
+    dast_cpy_t cpy;
+    dast_del_t del;
+} dast_array_t;
 
 #endif /* __DAST_ARRAY_PRIVATE_H__ */

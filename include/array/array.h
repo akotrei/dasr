@@ -69,10 +69,9 @@ void dast_array_append(dast_array_t* array, void* obj);
 void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index);
 void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n);
 
-dast_u8_t dast_array_pop_to(dast_array_t* array, void* dst);
-dast_u8_t dast_array_pop(dast_array_t* array);
-dast_u8_t dast_array_remove_to(dast_array_t* array, dast_u64_t index, void* dst);
-dast_u8_t dast_array_remove(dast_array_t* array, dast_u64_t index);
+dast_u8_t dast_array_pop(dast_array_t* array, void* dst);
+dast_u8_t dast_array_remove(dast_array_t* array, dast_u64_t index, void* dst);
+dast_u8_t dast_array_replace(dast_array_t* array, void* obj, dast_u64_t index);
 
 void dast_array_reverse(dast_array_t* array);
 

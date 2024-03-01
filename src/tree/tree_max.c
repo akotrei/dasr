@@ -15,9 +15,9 @@ dast_knot_t* dast_knot_max(dast_knot_t* knot)
 
 void* dast_tree_max(dast_tree_t* tree)
 {
-    if (!tree->root)
+    if (!(tree->max))
     {
         return 0;
     }
-    return (char*)dast_knot_max(tree->root) + sizeof(dast_knot_t);
+    return (char*)(tree->max) + sizeof(dast_knot_t);
 }

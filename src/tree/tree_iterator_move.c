@@ -1,15 +1,16 @@
 #include "tree/tree_private.h"
 
-void* dast_tree_iterator_next(void* self)
-{
-    dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
-    dast_knot_t *         out, *tmp;
-    out = tmp = tree_iterator->curr;
+dast_u8_t dast_tree_iterator_reached(dast_iterator_t* iterator) { return ((dast_tree_iterator_t*)iterator)->curr == 0; }
 
-    if (!out)
-    {
-        return out;
-    }
+void* dast_tree_iterator_get(dast_iterator_t* iterator)
+{
+    return (char*)(((dast_tree_iterator_t*)iterator)->curr) + sizeof(dast_knot_t);
+}
+
+void dast_tree_iterator_next(dast_iterator_t* iterator)
+{
+    dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)iterator;
+    dast_knot_t*          tmp = tree_iterator->curr;
 
     if (tmp->right)
     {
@@ -39,20 +40,12 @@ void* dast_tree_iterator_next(void* self)
     {
         tree_iterator->curr = 0;
     }
-
-    return (char*)out + sizeof(dast_knot_t);
 }
 
-void* dast_tree_iterator_prev(void* self)
+void dast_tree_iterator_prev(dast_iterator_t* iterator)
 {
-    dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)self;
-    dast_knot_t *         out, *tmp;
-    out = tmp = tree_iterator->curr;
-
-    if (!out)
-    {
-        return out;
-    }
+    dast_tree_iterator_t* tree_iterator = (dast_tree_iterator_t*)iterator;
+    dast_knot_t*          tmp = tree_iterator->curr;
 
     if (tmp->left)
     {
@@ -82,6 +75,4 @@ void* dast_tree_iterator_prev(void* self)
     {
         tree_iterator->curr = 0;
     }
-
-    return (char*)out + sizeof(dast_knot_t);
 }

@@ -712,6 +712,113 @@ void test_delete_case_1()
     dast_tree_destroy_from(tree);
 }
 
+void test_iter_empty()
+{
+    dast_u64_t        alloc_size = dast_allocator_std_sizeof();
+    char              mem_allocator[alloc_size];
+    dast_allocator_t* allocator = dast_allocator_std_init(mem_allocator);
+
+    dast_tree_t* tree = dast_tree_init(allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
+
+    // printf("tree->min %p\n", tree->min.left);
+    printf("tree->min %p\n", dast_tree_min(tree));
+    printf("tree->max %p\n", dast_tree_max(tree));
+
+    dast_iterator_t* iter = dast_tree_iterator_new(tree, 0);
+    printf("iter\n");
+    printf("iter->next %p %p\n", iter->next(iter), iter->next(iter));
+    printf("iter->prev %p %p\n", iter->prev(iter), iter->prev(iter));
+}
+
+void test_iter_one_elem()
+{
+    printf("=======================\n");
+    dast_u64_t        alloc_size = dast_allocator_std_sizeof();
+    char              mem_allocator[alloc_size];
+    dast_allocator_t* allocator = dast_allocator_std_init(mem_allocator);
+
+    dast_tree_t* tree = dast_tree_init(allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
+
+    int val = 10;
+    dast_tree_add(tree, &val);
+
+    printf("tree->min %p %d\n", dast_tree_min(tree), *(int*)dast_tree_min(tree));
+    printf("tree->max %p %d\n", dast_tree_max(tree), *(int*)dast_tree_max(tree));
+
+    dast_iterator_t* iter = dast_tree_iterator_new(tree, 0);
+    printf("iter\n");
+    printf("iter->next %p ---", iter->next(iter));
+    printf("iter->next %p\n", iter->next(iter));
+    printf("iter->prev %p ---", iter->prev(iter));
+    printf("iter->prev %p\n", iter->prev(iter));
+}
+
+void test_iter_many_elem()
+{
+    printf("=======================\n");
+    dast_u64_t        alloc_size = dast_allocator_std_sizeof();
+    char              mem_allocator[alloc_size];
+    dast_allocator_t* allocator = dast_allocator_std_init(mem_allocator);
+
+    dast_tree_t* tree = dast_tree_init(allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
+
+    int val = 0;
+    while (val < 10)
+    {
+        dast_tree_add(tree, &val);
+        val++;
+    }
+
+    printf("tree->min %p %d\n", dast_tree_min(tree), *(int*)dast_tree_min(tree));
+    printf("tree->max %p %d\n", dast_tree_max(tree), *(int*)dast_tree_max(tree));
+
+    dast_iterator_t* iter = dast_tree_iterator_new(tree, 0);
+    void*            o;
+    while ((o = iter->next(iter)))
+    {
+        printf("v: %d\n", *(int*)o);
+    }
+    printf("iter\n");
+    printf("iter->next %p %p\n", iter->next(iter), iter->next(iter));
+    printf("iter->prev %p %p\n", iter->prev(iter), iter->prev(iter));
+}
+
+void test_iter_many_elem_next_and_prev()
+{
+    printf("=======================\n");
+    dast_u64_t        alloc_size = dast_allocator_std_sizeof();
+    char              mem_allocator[alloc_size];
+    dast_allocator_t* allocator = dast_allocator_std_init(mem_allocator);
+
+    dast_tree_t* tree = dast_tree_init(allocator, sizeof(int), cmp, dast_cpy_generic, dast_del_dummy);
+
+    int val = 0;
+    while (val < 12)
+    {
+        dast_tree_add(tree, &val);
+        val++;
+    }
+
+    printf("tree->min %d\n", *(int*)dast_tree_min(tree));
+    printf("tree->max %d\n", *(int*)dast_tree_max(tree));
+
+    dast_iterator_t* iter = dast_tree_iterator_new(tree, 0);
+    void*            o;
+    while (1)
+    {
+        o = iter->next(iter);
+        o = iter->next(iter);
+        o = iter->prev(iter);
+
+        if (!o)
+        {
+            break;
+        }
+        printf("v: %d\n", *(int*)o);
+    }
+    printf("---\n");
+}
+
 int main(int argc, char** arcv)
 {
     // test_add_fix_up_left_left_nil();
@@ -736,7 +843,11 @@ int main(int argc, char** arcv)
     // DEBUG_PRINT("==========\n");
     // test_add_fix_up_right_right_red();
     // DEBUG_PRINT("==========\n");
-    test_add_fix_up_all_cases();
+    // test_add_fix_up_all_cases();
+    test_iter_empty();
+    test_iter_one_elem();
+    test_iter_many_elem();
+    test_iter_many_elem_next_and_prev();
     // test_delete_case_1();
     DEBUG_PRINT("==========\n");
 

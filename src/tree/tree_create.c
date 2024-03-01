@@ -5,7 +5,7 @@ dast_u64_t dast_tree_sizeof() { return sizeof(dast_tree_t); }
 
 dast_tree_t* dast_tree_init_on(void*             memory,
                                dast_allocator_t* allocator,
-                               unsigned long     obj_size,
+                               dast_u64_t        obj_size,
                                dast_cmp_t        cmp,
                                dast_cpy_t        cpy,
                                dast_del_t        del)
@@ -18,6 +18,8 @@ dast_tree_t* dast_tree_init_on(void*             memory,
     tree->cmp = cmp;
     tree->cpy = cpy;
     tree->del = del;
+    tree->min = 0;
+    tree->max = 0;
     return tree;
 }
 

@@ -7,7 +7,8 @@
 #include "utils/display.h"
 #include "utils/mem.h"
 
-typedef struct _dast_knot_t dast_knot_t;
+typedef struct _dast_knot_t          dast_knot_t;
+typedef struct _dast_tree_iterator_t dast_tree_iterator_t;
 
 /* @dast_knot_t type is responsible for accessing to left, right and parent
  * knots nad keeping itself color. A user data is kept directly behind this data
@@ -39,6 +40,8 @@ typedef struct _dast_tree_t
     dast_allocator_t* allocator;
 
     dast_knot_t* root;
+    dast_knot_t* min;
+    dast_knot_t* max;
 } dast_tree_t;
 
 typedef struct _dast_tree_iterator_t
@@ -46,6 +49,8 @@ typedef struct _dast_tree_iterator_t
     dast_iterator_t iterator;
     dast_tree_t*    tree;
     dast_knot_t*    curr;
+    dast_knot_t*    start;
+    dast_knot_t*    end;
     dast_u8_t       reversed;
 
 } dast_tree_iterator_t;
@@ -78,9 +83,11 @@ void dast_tree_add_fix_up(dast_tree_t* tree, dast_knot_t* x);
 
 dast_u64_t dast_knot_height(dast_knot_t* knot);
 
-void* dast_tree_iterator_next(void* self);
-void* dast_tree_iterator_prev(void* self);
-void  dast_tree_iterator_reset(void* self);
+dast_u8_t dast_tree_iterator_reached(dast_iterator_t* iterator);
+void*     dast_tree_iterator_get(dast_iterator_t* iterator);
+void      dast_tree_iterator_next(dast_iterator_t* iterator);
+void      dast_tree_iterator_prev(dast_iterator_t* iterator);
+void      dast_tree_iterator_reset(dast_iterator_t* iterator);
 
 dast_knot_t* dast_knot_min(dast_knot_t* knot);
 dast_knot_t* dast_knot_max(dast_knot_t* knot);

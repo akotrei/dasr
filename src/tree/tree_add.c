@@ -12,7 +12,7 @@ void dast_tree_add(dast_tree_t* tree, void* obj)
     dast_knot_t**     curr = &(tree->root);
     dast_knot_t*      parent = 0;
     dast_allocator_t* allocator = tree->allocator;
-    int               compare_result;
+    dast_i32_t        compare_result;
 
     while (*curr)
     {
@@ -43,6 +43,15 @@ void dast_tree_add(dast_tree_t* tree, void* obj)
 
     *curr = knot_new;
     tree->size++;
+
+    if (!(tree->min) || cmp((char*)(tree->min) + sizeof(dast_knot_t), obj) > 0)
+    {
+        tree->min = knot_new;
+    }
+    if (!(tree->max) || cmp((char*)(tree->max) + sizeof(dast_knot_t), obj) < 0)
+    {
+        tree->max = knot_new;
+    }
 
     dast_tree_add_fix_up(tree, knot_new);
 }

@@ -1,6 +1,9 @@
 #ifndef __DAST_ARRAY_PRIVATE_H__
 #define __DAST_ARRAY_PRIVATE_H__
 
+#define DAST_ARRAY_GROW_FACTOR 2.0f
+#define DAST_ARRAY_INIT_SIZE 8
+
 #include "array/array.h"
 #include "interface/allocator.h"
 

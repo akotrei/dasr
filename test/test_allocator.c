@@ -1,13 +1,13 @@
-#include "utils/allocator.h"
+#include "utils/allocator_std.h"
 
 #include <stdio.h>
 
 int main(int argc, char** arcv)
 {
     printf("---\n");
-    unsigned long      alloc_size = dast_allocator_sizeof();
+    unsigned long      alloc_size = dast_allocator_std_init();
     char               mem[alloc_size];
-    dast_iallocator_t* allocator = dast_allocator_init(mem);
+    dast_iallocator_t* allocator = dast_allocator_std_init(mem);
     printf("alloc_size: %lu\n", alloc_size);
     printf("mem: %p\n", mem);
     printf("allocator: %p\n", allocator);

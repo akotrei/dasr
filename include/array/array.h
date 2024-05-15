@@ -29,16 +29,12 @@ dast_u64_t dast_array_sizeof();
  */
 dast_array_t* dast_array_init_on(void*             memory,
                                  dast_u64_t        obj_size,
-                                 dast_u64_t        prealloc_size,
-                                 dast_f32_t        factor,
                                  dast_allocator_t* allocator,
                                  dast_cpy_t        cpy,
                                  dast_del_t        del);
 
 /* Does the same as @dast_array_init but preallocate memory for itself using @allocator */
 dast_array_t* dast_array_init(dast_u64_t        obj_size,
-                              dast_u64_t        prealloc_size,
-                              dast_f32_t        factor,
                               dast_allocator_t* allocator,
                               dast_cpy_t        cpy,
                               dast_del_t        del);
@@ -51,6 +47,13 @@ void dast_array_destroy_from(dast_array_t* array);
 
 /* Does the same as @dast_array_deinit but shoukd be used if the array was created via @dast_array_new*/
 void dast_array_destroy(dast_array_t* array);
+
+// Frees unused memory
+void dast_array_shrink(dast_array_t* array);
+
+// Increase capacity to @size, if success returns 1,
+// otherwise 0 (e.g. there is already more than @size elements)
+dast_u8_t dast_array_reserve(dast_array_t* array, dast_u64_t size);
 
 void          dast_array_copy_to(dast_array_t* array, void* memory, dast_u64_t size);
 void          dast_array_deepcopy_to(dast_array_t* array, void* memory, dast_u64_t size);

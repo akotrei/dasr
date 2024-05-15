@@ -1,5 +1,49 @@
 #include "list/list_private.h"
 
+dast_list_t* dast_list_init_on(void*             memory,
+                               dast_allocator_t* allocator,
+                               dast_u64_t        obj_size,
+                               dast_cpy_t        cpy,
+                               dast_del_t        del)
+{
+    dast_list_t* list = (dast_list_t*)memory;
+    list->elems = 0;
+    list->elem_size = obj_size;
+    list->head = 0;
+    list->tail = 0;
+    list->allocator = allocator;
+    list->cpy = cpy;
+    list->del = del;
+    return list;
+}
+
+dast_list_t* dast_list_init(dast_allocator_t* allocator, dast_u64_t obj_size, dast_cpy_t cpy, dast_del_t del)
+{
+    dast_list_t* list = allocator->allocate(allocator, sizeof(dast_list_t));
+    list = dast_list_init_on(list, allocator, obj_size, cpy, del);
+    return list;
+}
+
+void dast_list_destroy_from(dast_list_t* list)
+{
+    dast_node_t* node = list->head;
+    dast_del_t   del = list->del;
+    while (node)
+    {
+        del((char*)(node) + sizeof(dast_node_t));
+        node = node->next;
+    }
+}
+
+void dast_list_destroy(dast_list_t* list)
+{
+    dast_allocator_t* allocator = list->allocator;
+    dast_list_destroy_from(list);
+    allocator->deallocate(allocator, list);
+}
+
+#include "list/list_private.h"
+
 dast_u64_t dast_list_sizeof() { return sizeof(dast_list_t); }
 
 dast_u64_t dast_list_size(dast_list_t* list) { return list->elems; }
@@ -48,11 +92,11 @@ dast_iterator_t* dast_list_iterator_new(dast_list_t* list, dast_u8_t reversed)
     {
         iter->curr = list->head;
     }
-    iter->iterator.reached = dast_list_iterator_reached;
-    iter->iterator.get = dast_list_iterator_get;
+    // iter->iterator.reached = dast_list_iterator_reached;
     iter->iterator.next = dast_list_iterator_next;
     iter->iterator.prev = dast_list_iterator_prev;
     iter->iterator.reset = dast_list_iterator_reset;
+    iter->last_move = LIST_ITER_NEXT;
     return (dast_iterator_t*)iter;
 }
 
@@ -73,12 +117,14 @@ void dast_list_iterator_next(dast_iterator_t* iterator)
 {
     dast_list_iterator_t* list_iterator = (dast_list_iterator_t*)iterator;
     list_iterator->curr = list_iterator->curr->next;
+    list_iterator->last_move = LIST_ITER_PREV;
 }
 
 void dast_list_iterator_prev(dast_iterator_t* iterator)
 {
     dast_list_iterator_t* list_iterator = (dast_list_iterator_t*)iterator;
     list_iterator->curr = list_iterator->curr->prev;
+    list_iterator->last_move = LIST_ITER_PREV;
 }
 
 void dast_list_iterator_reset(dast_iterator_t* iterator)
@@ -134,29 +180,24 @@ void dast_list_prepend(dast_list_t* list, void* obj)
     list->elems++;
 }
 
-dast_u8_t dast_list_insert_before(dast_iterator_t* iterator, void* obj)
+void dast_list_insert_before(dast_iterator_t* iterator, void* obj)
 {
     dast_list_iterator_t* iter = (dast_list_iterator_t*)iterator;
     dast_list_t*          list = iter->list;
     dast_node_t*          curr = iter->curr;
     dast_allocator_t*     allocator = list->allocator;
-
+    
     if (!curr)
     {
-        return 0;
-    }
-
-    list->elems++;
-    if (curr == list->head)
-    {
-        dast_list_prepend(list, obj);
-        return 1;
-    }
-
-    if (curr == list->tail)
-    {
-        dast_list_append(list, obj);
-        return 1;
+        if (list->elems == 0 || iter->last_move == LIST_ITER_NEXT)
+        {
+            dast_list_append(list, obj);
+        }
+        else
+        {
+            dast_list_prepend(list, obj);
+        }
+        return;
     }
 
     dast_node_t* new_node = allocator->allocate(allocator, sizeof(dast_node_t) + list->elem_size);
@@ -165,10 +206,10 @@ dast_u8_t dast_list_insert_before(dast_iterator_t* iterator, void* obj)
     new_node->prev = curr->prev;
     curr->prev->next = new_node;
     curr->prev = new_node;
-    return 1;
+    list->elems++;
 }
 
-dast_u8_t dast_list_insert_after(dast_iterator_t* iterator, void* obj)
+void dast_list_insert_after(dast_iterator_t* iterator, void* obj)
 {
     dast_list_iterator_t* iter = (dast_list_iterator_t*)iterator;
     dast_list_t*          list = iter->list;
@@ -177,20 +218,15 @@ dast_u8_t dast_list_insert_after(dast_iterator_t* iterator, void* obj)
 
     if (!curr)
     {
-        return 0;
-    }
-
-    list->elems++;
-    if (curr == list->head)
-    {
-        dast_list_prepend(list, obj);
-        return 1;
-    }
-
-    if (curr == list->tail)
-    {
-        dast_list_append(list, obj);
-        return 1;
+        if (list->elems == 0 || iter->last_move == LIST_ITER_NEXT)
+        {
+            dast_list_append(list, obj);
+        }
+        else
+        {
+            dast_list_prepend(list, obj);
+        }
+        return;
     }
 
     dast_node_t* new_node = allocator->allocate(allocator, sizeof(dast_node_t) + list->elem_size);
@@ -199,7 +235,6 @@ dast_u8_t dast_list_insert_after(dast_iterator_t* iterator, void* obj)
     new_node->prev = curr;
     curr->next->prev = new_node;
     curr->prev = new_node;
-    return 1;
 }
 
 dast_u8_t dast_list_replace(dast_iterator_t* iterator, void* obj)
@@ -207,7 +242,6 @@ dast_u8_t dast_list_replace(dast_iterator_t* iterator, void* obj)
     dast_list_iterator_t* iter = (dast_list_iterator_t*)iterator;
     dast_list_t*          list = iter->list;
     dast_node_t*          curr = iter->curr;
-    dast_allocator_t*     allocator = list->allocator;
 
     if (!curr)
     {

@@ -4,6 +4,12 @@
 #include "interface/allocator.h"
 #include "list/list.h"
 
+typedef enum
+{
+    LIST_ITER_NEXT = 0,
+    LIST_ITER_PREV = 1
+} last_move_t;
+
 typedef struct _dast_node_t          dast_node_t;
 typedef struct _dast_list_iterator_t dast_list_iterator_t;
 
@@ -19,6 +25,7 @@ typedef struct _dast_list_iterator_t
     dast_list_t*    list;
     dast_node_t*    curr;
     dast_u8_t       reversed;
+    last_move_t     last_move;
 
 } dast_list_iterator_t;
 

@@ -15,11 +15,11 @@ dast_tree_t* dast_tree_init_on(void*             memory,
     tree->obj_size = obj_size;
     tree->size = 0;
     tree->root = 0;
+    tree->min = 0;
+    tree->max = 0;
     tree->cmp = cmp;
     tree->cpy = cpy;
     tree->del = del;
-    tree->min = 0;
-    tree->max = 0;
     return tree;
 }
 

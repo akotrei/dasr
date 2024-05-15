@@ -23,7 +23,6 @@ dast_map_t* dast_map_init_on(void*             memory,
                              dast_del_t        del_val,
                              dast_hash_t       hash_key,
                              dast_cmp_t        cmp_key);
-
 dast_map_t* dast_map_init(dast_allocator_t* allocator,
                           dast_u64_t        key_size,
                           dast_u64_t        val_size,
@@ -35,7 +34,6 @@ dast_map_t* dast_map_init(dast_allocator_t* allocator,
                           dast_cmp_t        cmp_key);
 
 void dast_map_destroy_from(dast_map_t* map);
-
 void dast_map_destroy(dast_map_t* map);
 
 void dast_map_copy(dast_map_t* map, void* memory);
@@ -49,14 +47,11 @@ dast_u64_t dast_map_keysize(dast_map_t* map);
 dast_u64_t dast_map_valsize(dast_map_t* map);
 void       dast_map_clear(dast_map_t* map);
 
-void* dast_map_get(dast_map_t* map, void* key);
-void  dast_map_set(dast_map_t* map, void* key, void* value);
+void*     dast_map_get(dast_map_t* map, void* key, dast_u8_t get_value);
+void      dast_map_set(dast_map_t* map, void* key, void* value);
+dast_u8_t dast_map_remove(dast_map_t* map, void* key, void* key_dst, void* val_dst);
 
-dast_iterator_t* dast_map_iterator_new(dast_map_t* map, dast_u8_t reversed);
+dast_iterator_t* dast_map_iterator_new(dast_map_t* map, dast_u8_t reversed, dast_u8_t by_values);
 void             dast_map_iterator_delete(dast_iterator_t* iterator);
-
-void dast_map_update(dast_map_t* map, dast_map_t* another);
-
-dast_u8_t dast_map_remove(dast_map_t* map, void* key, void* dst);
 
 #endif /* __DAST_MAP_H__ */

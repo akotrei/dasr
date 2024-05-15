@@ -8,15 +8,15 @@ typedef struct _dast_set_t dast_set_t;
 
 /* Returns number of bytes that a @dast_set_t instance needs*/
 unsigned long dast_set_sizeof();
-dast_set_t*   dast_set_init(void*              memory,
+dast_set_t*   dast_set_init(void*             memory,
                             dast_allocator_t* allocator,
-                            unsigned long      obj_size,
+                            unsigned long     obj_size,
                             unsigned long(hash_f)(void* key),
                             int (*cmp_f)(void* l, void* r),
                             void (*cpy_f)(void* obj, void* memory),
                             void (*del_f)(void* obj));
 dast_set_t*   dast_set_new(dast_allocator_t* allocator,
-                           unsigned long      obj_size,
+                           unsigned long     obj_size,
                            unsigned long(hash_f)(void* key),
                            int (*cmp_f)(void* l, void* r),
                            void (*cpy_f)(void* obj, void* memory),

@@ -38,8 +38,8 @@ void             dast_list_iterator_delete(dast_iterator_t* iterator);
 
 void      dast_list_append(dast_list_t* list, void* obj);
 void      dast_list_prepend(dast_list_t* list, void* obj);
-dast_u8_t dast_list_insert_before(dast_iterator_t* iterator, void* obj);
-dast_u8_t dast_list_insert_after(dast_iterator_t* iterator, void* obj);
+void      dast_list_insert_before(dast_iterator_t* iterator, void* obj);
+void      dast_list_insert_after(dast_iterator_t* iterator, void* obj);
 dast_u8_t dast_list_replace(dast_iterator_t* iterator, void* obj);
 dast_u8_t dast_list_replace_front(dast_list_t* list, void* obj);
 dast_u8_t dast_list_replace_back(dast_list_t* list, void* obj);

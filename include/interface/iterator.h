@@ -7,8 +7,8 @@ typedef struct _dast_iterator_t dast_iterator_t;
 
 typedef struct _dast_iterator_t
 {
-    dast_u8_t (*reached)(dast_iterator_t* self);
-    void* (*get)(dast_iterator_t* self);
+    dast_u8_t reached;  // check it before using @next or @prev
+    void* elem;  // use it to get current element
     void (*next)(dast_iterator_t* self);
     void (*prev)(dast_iterator_t* self);
     void (*reset)(dast_iterator_t* self);

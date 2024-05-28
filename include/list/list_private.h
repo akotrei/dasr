@@ -4,12 +4,6 @@
 #include "interface/allocator.h"
 #include "list/list.h"
 
-typedef enum
-{
-    LIST_ITER_NEXT = 0,
-    LIST_ITER_PREV = 1
-} last_move_t;
-
 typedef struct _dast_node_t          dast_node_t;
 typedef struct _dast_list_iterator_t dast_list_iterator_t;
 
@@ -25,7 +19,6 @@ typedef struct _dast_list_iterator_t
     dast_list_t*    list;
     dast_node_t*    curr;
     dast_u8_t       reversed;
-    last_move_t     last_move;
 
 } dast_list_iterator_t;
 
@@ -43,10 +36,8 @@ typedef struct _dast_list_t
     dast_del_t del;
 } dast_list_t;
 
-dast_u8_t dast_list_iterator_reached(dast_iterator_t* iterator);
-void*     dast_list_iterator_get(dast_iterator_t* iterator);
-void      dast_list_iterator_next(dast_iterator_t* iterator);
-void      dast_list_iterator_prev(dast_iterator_t* iterator);
-void      dast_list_iterator_reset(dast_iterator_t* iterator);
+void dast_list_iterator_next(dast_iterator_t* iterator);
+void dast_list_iterator_prev(dast_iterator_t* iterator);
+void dast_list_iterator_reset(dast_iterator_t* iterator);
 
 #endif /* __DAST_LIST_PRIVATE_H__ */

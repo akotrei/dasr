@@ -1,4 +1,4 @@
-# install unity before testing: https://www.throwtheswitch.org/unity
+# you need to install unity before testing: https://www.throwtheswitch.org/unity
 
 ifeq ($(origin CC), default)
   CC = gcc
@@ -8,13 +8,15 @@ CFLAGS ?= -Wall -O2
 override CFLAGS += -I../include
 BUILD ?= ../build
 
-TSRC = test_list.c
+TSRC = test_allocator_std.c test_list.c
 TOBJ = $(TSRC:.c=.o)
 TEXE = $(TOBJ:.o=.x)
 
+$(info $(TEXE))
+
 .PHONY: runtest
 runtest: $(TEXE)
-	./$<
+	$(foreach f, $^, ./$(f);)
 
 .PHONY: clean
 clean:

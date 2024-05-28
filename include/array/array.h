@@ -34,10 +34,7 @@ dast_array_t* dast_array_init_on(void*             memory,
                                  dast_del_t        del);
 
 /* Does the same as @dast_array_init but preallocate memory for itself using @allocator */
-dast_array_t* dast_array_init(dast_u64_t        obj_size,
-                              dast_allocator_t* allocator,
-                              dast_cpy_t        cpy,
-                              dast_del_t        del);
+dast_array_t* dast_array_init(dast_u64_t obj_size, dast_allocator_t* allocator, dast_cpy_t cpy, dast_del_t del);
 
 /* Deletes the array instance, should be used for such array that was created via @dast_array_init
  *

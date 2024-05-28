@@ -8,7 +8,7 @@ dast_array_t* dast_array_init_on(void*             memory,
                                  dast_del_t        del)
 {
     dast_array_t* array = (dast_array_t*)memory;
-    array->data = allocator->allocate(allocator, obj_size*DAST_ARRAY_INIT_SIZE);
+    array->data = allocator->allocate(allocator, obj_size * DAST_ARRAY_INIT_SIZE);
     array->elems = 0;
     array->elem_size = obj_size;
     array->capacity = DAST_ARRAY_INIT_SIZE;
@@ -19,10 +19,7 @@ dast_array_t* dast_array_init_on(void*             memory,
     return array;
 }
 
-dast_array_t* dast_array_init(dast_u64_t        obj_size,
-                              dast_allocator_t* allocator,
-                              dast_cpy_t        cpy,
-                              dast_del_t        del)
+dast_array_t* dast_array_init(dast_u64_t obj_size, dast_allocator_t* allocator, dast_cpy_t cpy, dast_del_t del)
 {
     dast_array_t* array = allocator->allocate(allocator, sizeof(dast_array_t));
     array = dast_array_init_on(array, obj_size, allocator, cpy, del);
@@ -54,21 +51,30 @@ void dast_array_destroy(dast_array_t* array)
 void dast_array_shrink(dast_array_t* array)
 {
     dast_allocator_t* allocator = array->allocator;
-    dast_u64_t capacity = array->capacity;
-    dast_u64_t elems = array->elems;
-    dast_u64_t elem_size = array->elem_size;
-    if (capacity == elems) { return; }
-    array->data = allocator->reallocate(allocator, array->data, elems*elem_size);
+    dast_u64_t        capacity = array->capacity;
+    dast_u64_t        elems = array->elems;
+    dast_u64_t        elem_size = array->elem_size;
+    if (capacity == elems)
+    {
+        return;
+    }
+    array->data = allocator->reallocate(allocator, array->data, elems * elem_size);
 }
 
 dast_u8_t dast_array_reserve(dast_array_t* array, dast_u64_t size)
 {
     dast_allocator_t* allocator = array->allocator;
-    dast_u64_t elems = array->elems;
-    dast_u64_t elem_size = array->elem_size;
-    if (size < elems) { return 0; }
-    if (size == elems) { return 1; }
-    array->data = allocator->reallocate(allocator, array->data, elem_size*size);
+    dast_u64_t        elems = array->elems;
+    dast_u64_t        elem_size = array->elem_size;
+    if (size < elems)
+    {
+        return 0;
+    }
+    if (size == elems)
+    {
+        return 1;
+    }
+    array->data = allocator->reallocate(allocator, array->data, elem_size * size);
     array->capacity = size;
     return 1;
 }
@@ -102,8 +108,8 @@ void* dast_array_index(dast_array_t* array, dast_u64_t index) { return array->da
 void dast_array_append(dast_array_t* array, void* obj)
 {
     dast_allocator_t* allocator = array->allocator;
-    dast_u64_t elems = array->elems;
-    dast_u64_t elem_size = array->elem_size;
+    dast_u64_t        elems = array->elems;
+    dast_u64_t        elem_size = array->elem_size;
     if (elems == array->capacity)
     {
         array->capacity *= array->factor;
@@ -121,10 +127,10 @@ void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index)
         return;
     }
 
-    char*      data = array->data;
+    char*             data = array->data;
     dast_allocator_t* allocator = array->allocator;
-    dast_u64_t elems = array->elems;
-    dast_u64_t elem_size = array->elem_size;
+    dast_u64_t        elems = array->elems;
+    dast_u64_t        elem_size = array->elem_size;
     if (array->elems == array->capacity)
     {
         array->capacity++;
@@ -145,11 +151,11 @@ void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index)
 
 void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n)
 {
-    char*      data = array->data;
+    char*             data = array->data;
     dast_allocator_t* allocator = array->allocator;
-    dast_u64_t elems = array->elems;
-    dast_u64_t elem_size = array->elem_size;
-    dast_u64_t i = 0;
+    dast_u64_t        elems = array->elems;
+    dast_u64_t        elem_size = array->elem_size;
+    dast_u64_t        i = 0;
     if (elems + n > array->capacity)
     {
         array->capacity = (elems + n) * array->factor;

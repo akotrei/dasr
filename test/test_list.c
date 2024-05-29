@@ -457,6 +457,140 @@ void test_dast_list_replace()
     dast_list_destroy(list);
 }
 
+void test_dast_list_remove()
+{
+    dast_list_t* list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_iterator_t* iter;
+    dast_u32_t v1 = 42, v2 = 98, v3 = 102;
+    dast_u32_t values[2] = {42, 102};
+    dast_u32_t dst = 0;
+    dast_u8_t status;
+    dast_u32_t i;
+
+    iter = dast_list_iterator_new(list, 0);
+    status = dast_list_remove(iter, 0, 0);
+    TEST_ASSERT(status == 0);
+    TEST_ASSERT(list->elems == 0);
+    dast_list_iterator_delete(iter);
+
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    status = dast_list_remove(iter, &dst, 0);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(iter->elem == 0);
+    TEST_ASSERT(list->elems == 0);
+    TEST_ASSERT(dst == v1);
+    dast_list_iterator_delete(iter);
+
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    status = dast_list_remove(iter, &dst, 1);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(iter->elem == 0);
+    TEST_ASSERT(list->elems == 0);
+    TEST_ASSERT(dst == v1);
+    dast_list_iterator_delete(iter);
+
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    dast_list_insert_after(iter, &v2);
+    status = dast_list_remove(iter, &dst, 0);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(iter->elem == 0);
+    TEST_ASSERT(list->elems == 1);
+    TEST_ASSERT(dst == v2);
+    dast_list_iterator_delete(iter);
+
+    dast_list_clear(list);
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    dast_list_insert_after(iter, &v2);
+    status = dast_list_remove(iter, &dst, 1);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(*(dast_u32_t*)iter->elem == v1);
+    TEST_ASSERT(list->elems == 1);
+    TEST_ASSERT(dst == v2);
+    dast_list_iterator_delete(iter);
+
+    dst = 100;
+    dast_list_clear(list);
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    dast_list_insert_after(iter, &v2);
+    status = dast_list_remove(iter, 0, 1);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(*(dast_u32_t*)iter->elem == v1);
+    TEST_ASSERT(list->elems == 1);
+    TEST_ASSERT(dst == 100);
+    dast_list_iterator_delete(iter);
+
+    dast_list_clear(list);
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    dast_list_insert_after(iter, &v2);
+    dast_list_insert_after(iter, &v3);
+    iter->prev(iter);
+    status = dast_list_remove(iter, &dst, 0);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(*(dast_u32_t*)iter->elem == v3);
+    TEST_ASSERT(list->elems == 2);
+    TEST_ASSERT(dst == v2);
+    dast_list_iterator_delete(iter);
+
+    dast_list_clear(list);
+    iter = dast_list_iterator_new(list, 0);
+    dast_list_insert_after(iter, &v1);
+    dast_list_insert_after(iter, &v2);
+    dast_list_insert_after(iter, &v3);
+    iter->prev(iter);
+    status = dast_list_remove(iter, &dst, 1);
+    TEST_ASSERT(status == 1);
+    TEST_ASSERT(*(dast_u32_t*)iter->elem == v1);
+    TEST_ASSERT(list->elems == 2);
+    TEST_ASSERT(dst == v2);
+    dast_list_iterator_delete(iter);
+
+    iter = dast_list_iterator_new(list, 0);
+    for (i = 0; iter->elem; i++)
+    {
+        TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
+        iter->next(iter);
+    }
+    TEST_ASSERT(i == 2);
+    dast_list_iterator_delete(iter);
+
+    dast_list_destroy(list);
+}
+
+void test_dast_list_reverse()
+{
+    dast_list_t* list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_iterator_t* iter;
+    dast_u32_t forward[] = {1, 2, 3, 4};
+    dast_u32_t backward[] = {4, 3, 2, 1};
+    dast_u32_t i;
+
+    dast_list_reverse(list);
+    TEST_ASSERT(list->elems == 0);
+
+    for (i = 0; i < 4; i++)
+    {
+        dast_list_append(list, &forward[i]);
+    }
+
+    dast_list_reverse(list);
+    iter = dast_list_iterator_new(list, 0);
+    for (i = 0; iter->elem; i++)
+    {
+        TEST_ASSERT(*(dast_u32_t*)iter->elem == backward[i]);
+        iter->next(iter);
+    }
+    TEST_ASSERT(i == 4);
+    dast_list_iterator_delete(iter);
+    
+    dast_list_destroy(list);
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -482,5 +616,7 @@ int main()
     RUN_TEST(test_dast_list_insert_before);
     RUN_TEST(test_dast_list_insert_after);
     RUN_TEST(test_dast_list_replace);
+    RUN_TEST(test_dast_list_remove);
+    RUN_TEST(test_dast_list_reverse);
     return UNITY_END();
 }

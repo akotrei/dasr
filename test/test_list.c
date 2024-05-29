@@ -349,10 +349,9 @@ void test_dast_list_insert_before()
     status = dast_list_insert_before(iter, &v3);
     TEST_ASSERT(status == 1);
     dast_u32_t i;
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 3);
     status = dast_list_insert_before(iter, &v3);
@@ -366,10 +365,9 @@ void test_dast_list_insert_before()
     status = dast_list_insert_before(iter, &v1);
     TEST_ASSERT(status == 1);
     iter->prev(iter);
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values_repeat[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 4);
     TEST_ASSERT(list->elems == 4);
@@ -395,10 +393,9 @@ void test_dast_list_insert_after()
     status = dast_list_insert_after(iter, &v3);
     TEST_ASSERT(status == 1);
     dast_u32_t i;
-    for (i = 2; iter->elem; i--)
+    for (i = 2; iter->elem; iter->prev(iter), i--)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
-        iter->prev(iter);
     }
     TEST_ASSERT(i == -1);
     TEST_ASSERT(list->elems == 3);
@@ -413,10 +410,9 @@ void test_dast_list_insert_after()
     status = dast_list_insert_after(iter, &v1);
     TEST_ASSERT(status == 1);
     dast_list_iterator_reset(iter);
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values_repeat[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 4);
     TEST_ASSERT(list->elems == 4);
@@ -445,10 +441,9 @@ void test_dast_list_replace()
     status = dast_list_replace(iter, &v3);
     TEST_ASSERT(status == 1);
     dast_list_iterator_reset(iter);
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 2);
     TEST_ASSERT(list->elems == 2);
@@ -551,10 +546,9 @@ void test_dast_list_remove()
     dast_list_iterator_delete(iter);
 
     iter = dast_list_iterator_new(list, 0);
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 2);
     dast_list_iterator_delete(iter);
@@ -580,10 +574,9 @@ void test_dast_list_reverse()
 
     dast_list_reverse(list);
     iter = dast_list_iterator_new(list, 0);
-    for (i = 0; iter->elem; i++)
+    for (i = 0; iter->elem; iter->next(iter), i++)
     {
         TEST_ASSERT(*(dast_u32_t*)iter->elem == backward[i]);
-        iter->next(iter);
     }
     TEST_ASSERT(i == 4);
     dast_list_iterator_delete(iter);

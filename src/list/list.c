@@ -396,3 +396,70 @@ void dast_list_reverse(dast_list_t* list)
     list->head = list->tail;
     list->tail = tmp;
 }
+
+void dast_list_copy_to(dast_list_t* list, void* memory, dast_u64_t size)
+{
+    dast_list_t* new_list = (dast_list_t*)memory;
+    dast_allocator_t* allocator = list->allocator;
+    dast_u64_t elem_size = list->elem_size;
+    dast_node_t* origin = list->head;
+    dast_node_t* prev = 0;
+    dast_node_t** pp = &(new_list->head);
+
+    dast_cpy_generic(list, new_list, size);
+
+    while (origin)
+    {
+        *pp = allocator->allocate(allocator, sizeof(dast_node_t) + elem_size);
+        dast_cpy_generic(origin, *pp, sizeof(dast_node_t) + elem_size);
+        (*pp)->prev = prev;
+        prev = *pp;
+        pp = &((*pp)->next);
+        origin = origin->next;
+    }
+    new_list->tail = prev;
+    *pp = 0;
+}
+
+void dast_list_deepcopy_to(dast_list_t* list, void* memory, dast_u64_t size)
+{
+    dast_list_t* new_list = (dast_list_t*)memory;
+    dast_allocator_t* allocator = list->allocator;
+    dast_cpy_t cpy = list->cpy;
+    dast_u64_t elem_size = list->elem_size;
+    dast_node_t* origin = list->head;
+    dast_node_t* prev = 0;
+    dast_node_t** pp = &(new_list->head);
+
+    dast_cpy_generic(list, new_list, size);
+
+    while (origin)
+    {
+        *pp = allocator->allocate(allocator, sizeof(dast_node_t) + elem_size);
+        dast_cpy_generic(origin, *pp, sizeof(dast_node_t));
+        cpy((char*)origin + sizeof(dast_node_t), (char*)(*pp) + sizeof(dast_node_t), elem_size);
+        (*pp)->prev = prev;
+        prev = *pp;
+        pp = &((*pp)->next);
+        origin = origin->next;
+    }
+    new_list->tail = prev;
+    *pp = 0;
+}
+
+dast_list_t* dast_list_copy(dast_list_t* list, dast_allocator_t* allocator)
+{
+    allocator = allocator ? allocator : list->allocator;
+    dast_list_t* new_list = allocator->allocate(allocator, sizeof(dast_list_t));
+    dast_list_copy_to(list, new_list, sizeof(dast_list_t));
+    new_list->allocator = allocator;
+    return new_list;
+}
+dast_list_t* dast_list_deepcopy(dast_list_t* list, dast_allocator_t* allocator)
+{
+    allocator = allocator ? allocator : list->allocator;
+    dast_list_t* new_list = allocator->allocate(allocator, sizeof(dast_list_t));
+    dast_list_deepcopy_to(list, new_list, sizeof(dast_list_t));
+    new_list->allocator = allocator;
+    return new_list;
+}

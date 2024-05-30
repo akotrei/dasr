@@ -584,6 +584,36 @@ void test_dast_list_reverse()
     dast_list_destroy(list);
 }
 
+void test_dast_list_copy_to()
+{
+    dast_list_t* list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_list_t* new_list = allocator->allocate(allocator, sizeof(dast_list_t));
+    dast_iterator_t* iter;
+    dast_u32_t values[] = {1, 2, 3};
+    dast_u32_t i;
+
+    dast_list_append(list, &values[0]);
+    dast_list_append(list, &values[1]);
+    dast_list_append(list, &values[2]);
+
+    dast_list_copy_to(list, new_list, sizeof(dast_list_t));
+
+    TEST_ASSERT(new_list->elems == 3);
+    TEST_ASSERT(new_list->head != list->head);
+    TEST_ASSERT(new_list->tail != list->tail);
+
+    iter = dast_list_iterator_new(new_list, 0);
+    for (i = 0; iter->elem; iter->next(iter), i++)
+    {
+        TEST_ASSERT(*(dast_u32_t*)iter->elem == values[i]);
+    }
+    TEST_ASSERT(i == 3);
+    dast_list_iterator_delete(iter);
+
+    dast_list_destroy(list);
+    dast_list_destroy(new_list);
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -611,5 +641,6 @@ int main()
     RUN_TEST(test_dast_list_replace);
     RUN_TEST(test_dast_list_remove);
     RUN_TEST(test_dast_list_reverse);
+    RUN_TEST(test_dast_list_copy_to);
     return UNITY_END();
 }

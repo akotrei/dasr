@@ -1,9 +1,11 @@
 #include "array/array_private.h"
 #include "utils/mem.h"
 
+dast_u64_t dast_array_sizeof() { return sizeof(dast_array_t); }
+
 dast_array_t* dast_array_init_on(void*             memory,
-                                 dast_u64_t        obj_size,
                                  dast_allocator_t* allocator,
+                                 dast_u64_t        obj_size,
                                  dast_cpy_t        cpy,
                                  dast_del_t        del)
 {
@@ -19,26 +21,27 @@ dast_array_t* dast_array_init_on(void*             memory,
     return array;
 }
 
-dast_array_t* dast_array_init(dast_u64_t obj_size, dast_allocator_t* allocator, dast_cpy_t cpy, dast_del_t del)
+dast_array_t* dast_array_init(dast_allocator_t* allocator, dast_u64_t obj_size, dast_cpy_t cpy, dast_del_t del)
 {
     dast_array_t* array = allocator->allocate(allocator, sizeof(dast_array_t));
-    array = dast_array_init_on(array, obj_size, allocator, cpy, del);
+    array = dast_array_init_on(array, allocator, obj_size, cpy, del);
     return array;
 }
 
-void dast_array_destroy_from(dast_array_t* array)
+void dast_array_destroy_from(void* array)
 {
-    char*      data = array->data;
-    dast_u64_t obj_size = array->elem_size;
-    dast_del_t del = array->del;
+    dast_array_t* a = (dast_array_t*)array;
+    char*      data = a->data;
+    dast_u64_t obj_size = a->elem_size;
+    dast_del_t del = a->del;
     dast_u64_t i = 0;
-    dast_u64_t end = array->elems;
+    dast_u64_t end = a->elems;
     while (i < end)
     {
         del(data + i * obj_size);
         i++;
     }
-    array->allocator->deallocate(array->allocator, data);
+    a->allocator->deallocate(a->allocator, data);
 }
 
 void dast_array_destroy(dast_array_t* array)
@@ -58,28 +61,83 @@ void dast_array_shrink(dast_array_t* array)
     {
         return;
     }
-    array->data = allocator->reallocate(allocator, array->data, elems * elem_size);
+    array->capacity = elems < DAST_ARRAY_INIT_SIZE ? DAST_ARRAY_INIT_SIZE : elems;
+    array->data = allocator->reallocate(allocator, array->data, elem_size * array->capacity);
 }
 
-dast_u8_t dast_array_reserve(dast_array_t* array, dast_u64_t size)
+void dast_array_reserve(dast_array_t* array, dast_u64_t size)
 {
     dast_allocator_t* allocator = array->allocator;
     dast_u64_t        elems = array->elems;
     dast_u64_t        elem_size = array->elem_size;
-    if (size < elems)
+    dast_u64_t        free_slots = array->capacity - elems;
+
+    if (free_slots < size)
     {
-        return 0;
+        array->capacity = elems + size;
+        array->data = allocator->reallocate(allocator, array->data, elem_size * array->capacity);
     }
-    if (size == elems)
-    {
-        return 1;
-    }
-    array->data = allocator->reallocate(allocator, array->data, elem_size * size);
-    array->capacity = size;
-    return 1;
 }
 
-dast_u64_t dast_array_sizeof() { return sizeof(dast_array_t); }
+void dast_array_copy_to(void* array, void* memory, dast_u64_t size)
+{
+    dast_array_t* a = (dast_array_t*)array;
+    dast_array_t* dst_array = (dast_array_t*)memory;
+
+    dst_array->data = a->allocator->allocate(a->allocator, a->capacity * a->elem_size);
+    dast_cpy_generic(a->data, dst_array->data, a->elems * a->elem_size);
+
+    dst_array->elems = a->elems;
+    dst_array->elem_size = a->elem_size;
+    dst_array->capacity = a->capacity;
+    dst_array->factor = a->factor;
+    dst_array->allocator = a->allocator;
+    dst_array->cpy = a->cpy;
+    dst_array->del = a->del;
+}
+
+void dast_array_deepcopy_to(void* array, void* memory, dast_u64_t size)
+{
+    dast_array_t* a = (dast_array_t*)array;
+    dast_array_t* dst_array = (dast_array_t*)memory;
+    dast_u64_t    elem_size = a->elem_size;
+    dast_u64_t    i = 0;
+    dast_u64_t    end = a->elems;
+    dast_cpy_t    cpy = a->cpy;
+
+    char* src_data = a->data;
+    char* dst_data = a->allocator->allocate(a->allocator, a->capacity * a->elem_size);
+    while (i < end)
+    {
+        cpy(src_data + i * elem_size, dst_data + i * elem_size, elem_size);
+        i++;
+    }
+    dst_array->data = dst_data;
+
+    dst_array->elems = a->elems;
+    dst_array->elem_size = a->elem_size;
+    dst_array->capacity = a->capacity;
+    dst_array->factor = a->factor;
+    dst_array->allocator = a->allocator;
+    dst_array->cpy = a->cpy;
+    dst_array->del = a->del;
+}
+
+dast_array_t* dast_array_copy(dast_array_t* array, dast_allocator_t* allocator)
+{
+    allocator = allocator ? allocator : array->allocator;
+    dast_array_t* new_array = array->allocator->allocate(array->allocator, sizeof(dast_array_t));
+    dast_array_copy_to(array, new_array, sizeof(dast_array_t));
+    return new_array;
+}
+
+dast_array_t* dast_array_deepcopy(dast_array_t* array, dast_allocator_t* allocator)
+{
+    allocator = allocator ? allocator : array->allocator;
+    dast_array_t* new_array = array->allocator->allocate(array->allocator, sizeof(dast_array_t));
+    dast_array_deepcopy_to(array, new_array, sizeof(dast_array_t));
+    return new_array;
+}
 
 dast_u64_t dast_array_size(dast_array_t* array) { return array->elems; }
 
@@ -95,6 +153,7 @@ void dast_array_clear(dast_array_t* array)
     while (i < end)
     {
         del(data + i * elem_size);
+        i++;
     }
     array->elems = 0;
 }
@@ -159,14 +218,14 @@ void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n)
     if (elems + n > array->capacity)
     {
         array->capacity = (elems + n) * array->factor;
-        array->data = allocator->reallocate(allocator, data, array->capacity * elem_size);
+        array->data = data = allocator->reallocate(allocator, data, array->capacity * elem_size);
     }
     while (i < n)
     {
         array->cpy((char*)objs + i * elem_size, data + (i + elems) * elem_size, elem_size);
         i++;
     }
-    array->elem_size += n;
+    array->elems += n;
 }
 
 dast_u8_t dast_array_pop(dast_array_t* array, void* dst)
@@ -192,7 +251,7 @@ dast_u8_t dast_array_remove(dast_array_t* array, dast_u64_t index, void* dst)
     }
     dast_u64_t elems = array->elems;
     dast_u64_t elem_size = array->elem_size;
-    dast_u64_t bytes_to_copy = (elems - index + 1) * elem_size;
+    dast_u64_t bytes_to_copy = (elems - 1 - index) * elem_size;
     if (dst)
     {
         array->cpy(array->data + index * elem_size, dst, elem_size);

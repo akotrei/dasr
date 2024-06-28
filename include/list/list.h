@@ -16,10 +16,10 @@ dast_list_t*     dast_list_init_on(void*             memory,
                                    dast_cpy_t        cpy,
                                    dast_del_t        del);
 dast_list_t*     dast_list_init(dast_allocator_t* allocator, dast_u64_t obj_size, dast_cpy_t cpy, dast_del_t del);
-void             dast_list_destroy_from(dast_list_t* list);
+void             dast_list_destroy_from(void* list);
 void             dast_list_destroy(dast_list_t* list);
-void             dast_list_copy_to(dast_list_t* list, void* memory, dast_u64_t size);
-void             dast_list_deepcopy_to(dast_list_t* list, void* memory, dast_u64_t size);
+void             dast_list_copy_to(void* list, void* memory, dast_u64_t size);
+void             dast_list_deepcopy_to(void* list, void* memory, dast_u64_t size);
 dast_list_t*     dast_list_copy(dast_list_t* list, dast_allocator_t* allocator);
 dast_list_t*     dast_list_deepcopy(dast_list_t* list, dast_allocator_t* allocator);
 dast_u64_t       dast_list_size(dast_list_t* list);

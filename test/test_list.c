@@ -7,7 +7,7 @@
 char              alloc_mem[sizeof(dast_allocator_t)];
 dast_allocator_t* allocator;
 
-void setUp(void) { allocator = dast_allocator_std_init(alloc_mem); }
+void setUp(void) {}
 
 void tearDown(void) {}
 
@@ -611,11 +611,53 @@ void test_dast_list_copy_to()
     dast_list_iterator_delete(iter);
 
     dast_list_destroy(list);
+    allocator->deallocate(allocator, new_list);
+}
+
+void test_dast_list_deepcopy_to()
+{
+    dast_list_t* i_list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_list_t* l_list = dast_list_init(allocator, sizeof(dast_list_t), dast_list_copy_to, dast_list_destroy_from);
+    dast_list_t* new_l_list = allocator->allocate(allocator, sizeof(dast_list_t));
+
+    dast_u32_t values[] = {1, 2, 3};
+
+    dast_list_append(i_list, &values[0]);
+    dast_list_append(i_list, &values[1]);
+    dast_list_append(i_list, &values[2]);
+    dast_list_append(l_list, i_list);
+    TEST_ASSERT(*(dast_u32_t*)dast_list_front(i_list) == values[0]);
+    TEST_ASSERT(*(dast_u32_t*)dast_list_front((dast_list_t*)dast_list_front(l_list)) == values[0]);
+
+    dast_list_deepcopy_to(l_list, new_l_list, sizeof(dast_list_t));
+    dast_list_destroy_from(new_l_list);
+
+    dast_list_destroy(i_list);
+    dast_list_destroy(l_list);
+    allocator->deallocate(allocator, new_l_list);
+}
+
+void test_dast_list_copy()
+{
+    dast_list_t* list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_list_t* new_list = dast_list_copy(list, (dast_allocator_t*)0);
+
+    dast_list_destroy(list);
+    dast_list_destroy(new_list);
+}
+
+void test_dast_list_deepcopy()
+{
+    dast_list_t* list = dast_list_init(allocator, sizeof(dast_u32_t), dast_cpy_generic, dast_del_dummy);
+    dast_list_t* new_list = dast_list_deepcopy(list, (dast_allocator_t*)0);
+
+    dast_list_destroy(list);
     dast_list_destroy(new_list);
 }
 
 int main()
 {
+    allocator = dast_allocator_std_init(alloc_mem);
     UNITY_BEGIN();
     RUN_TEST(test_dast_list_sizeof);
     RUN_TEST(test_dast_list_init_on);
@@ -642,5 +684,8 @@ int main()
     RUN_TEST(test_dast_list_remove);
     RUN_TEST(test_dast_list_reverse);
     RUN_TEST(test_dast_list_copy_to);
+    RUN_TEST(test_dast_list_deepcopy_to);
+    RUN_TEST(test_dast_list_copy);
+    RUN_TEST(test_dast_list_deepcopy);
     return UNITY_END();
 }

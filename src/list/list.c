@@ -26,12 +26,13 @@ dast_list_t* dast_list_init(dast_allocator_t* allocator, dast_u64_t obj_size, da
     return list;
 }
 
-void dast_list_destroy_from(dast_list_t* list)
-{
+void dast_list_destroy_from(void* list)
+{  
+    dast_list_t*      l = (dast_list_t*)list;
     dast_node_t*      tmp;
-    dast_node_t*      node = list->head;
-    dast_del_t        del = list->del;
-    dast_allocator_t* allocator = list->allocator;
+    dast_node_t*      node = l->head;
+    dast_del_t        del = l->del;
+    dast_allocator_t* allocator = l->allocator;
     while (node)
     {
         tmp = node;
@@ -397,16 +398,17 @@ void dast_list_reverse(dast_list_t* list)
     list->tail = tmp;
 }
 
-void dast_list_copy_to(dast_list_t* list, void* memory, dast_u64_t size)
+void dast_list_copy_to(void* list, void* memory, dast_u64_t size)
 {
+    dast_list_t* l =  (dast_list_t*)list;
     dast_list_t* new_list = (dast_list_t*)memory;
-    dast_allocator_t* allocator = list->allocator;
-    dast_u64_t elem_size = list->elem_size;
-    dast_node_t* origin = list->head;
+    dast_allocator_t* allocator = l->allocator;
+    dast_u64_t elem_size = l->elem_size;
+    dast_node_t* origin = l->head;
     dast_node_t* prev = 0;
     dast_node_t** pp = &(new_list->head);
 
-    dast_cpy_generic(list, new_list, size);
+    dast_cpy_generic(l, new_list, size);
 
     while (origin)
     {
@@ -421,17 +423,18 @@ void dast_list_copy_to(dast_list_t* list, void* memory, dast_u64_t size)
     *pp = 0;
 }
 
-void dast_list_deepcopy_to(dast_list_t* list, void* memory, dast_u64_t size)
+void dast_list_deepcopy_to(void* list, void* memory, dast_u64_t size)
 {
+    dast_list_t* l = (dast_list_t*)list;
     dast_list_t* new_list = (dast_list_t*)memory;
-    dast_allocator_t* allocator = list->allocator;
-    dast_cpy_t cpy = list->cpy;
-    dast_u64_t elem_size = list->elem_size;
-    dast_node_t* origin = list->head;
+    dast_allocator_t* allocator = l->allocator;
+    dast_cpy_t cpy = l->cpy;
+    dast_u64_t elem_size = l->elem_size;
+    dast_node_t* origin = l->head;
     dast_node_t* prev = 0;
     dast_node_t** pp = &(new_list->head);
 
-    dast_cpy_generic(list, new_list, size);
+    dast_cpy_generic(l, new_list, size);
 
     while (origin)
     {
@@ -455,6 +458,7 @@ dast_list_t* dast_list_copy(dast_list_t* list, dast_allocator_t* allocator)
     new_list->allocator = allocator;
     return new_list;
 }
+
 dast_list_t* dast_list_deepcopy(dast_list_t* list, dast_allocator_t* allocator)
 {
     allocator = allocator ? allocator : list->allocator;

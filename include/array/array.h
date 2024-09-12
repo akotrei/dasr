@@ -1,7 +1,6 @@
-/* @dast_array_t is a dynamic data structure for storing any elements in a
- * contiguous memory space and is able to expand it's capacity by strategy
- * capacity = capacity * factor
- */
+/// @dast_array_t is a dynamic data structure for storing any elements in a
+/// contiguous memory space and is able to expand it's capacity by strategy
+/// capacity = capacity * factor that allows to append elemnts for O(1)
 
 #ifndef __DAST_ARRAY_H__
 #define __DAST_ARRAY_H__
@@ -10,66 +9,75 @@
 #include "ntype.h"
 #include "utils/mem.h"
 
-typedef struct _dast_array_t dast_array_t;
 
-/* Returns number of bytes needed that an array instance occupies */
-dast_u64_t dast_array_sizeof();
+#define DAST_ARRAY_GROW_FACTOR 2.0f
+#define DAST_ARRAY_INIT_SIZE 8
 
-/* Creates an array instance on @memory
- * (it should point to a memory block that >= x bytes, where x = @dast_array_sizeof())
- *
- * @obj_size - size (in bytes) of objects that the array should hold
- * @allocator - an allocator instance to manage all memory tasks inside the array
- * @cpy - pointer to a function that is responsible for copying objects that are being added to the array
- * or when deep copying of the array occurs
- * @del - pointer to a function that is responsible for deleting objects that are erased from the array
- * or when the array going to be deleted
- */
-dast_array_t* dast_array_init_on(void*             memory,
-                                 dast_allocator_t* allocator,
-                                 dast_u64_t        obj_size,
-                                 dast_cpy_t        cpy,
-                                 dast_del_t        del);
+typedef struct _dast_array_t
+{
+    dast_allocator_t* allocator;
+    char*             data;
+    unsigned long     elems;
+    unsigned long     elem_size;
+    unsigned long     capacity;
+} dast_array_t;
 
-/* Does the same as @dast_array_init but preallocate memory for itself using @allocator */
-dast_array_t* dast_array_init(dast_allocator_t* allocator, dast_u64_t obj_size, dast_cpy_t cpy, dast_del_t del);
+// Initialize an array instance on @array
+// @obj_size - size (in bytes) of objects that the array should hold
+// @allocator - an allocator instance to manage all memory tasks inside @array
+void dast_array_init(dast_array_t* array, dast_allocator_t* allocator, unsigned long obj_size);
 
-/* Deletes the array instance, should be used for such array that was created via @dast_array_init
- *
- * Notes: invokes @del function from @dast_array_init for each objected in the array
- */
-void dast_array_destroy_from(void* array);
-
-/* Does the same as @dast_array_deinit but shoukd be used if the array was created via @dast_array_new*/
+// Deletes the array instance, should be used for such array that was created via @dast_array_init_on
+// Notes: invokes @del function from @dast_array_init_on for each objected in the array
 void dast_array_destroy(dast_array_t* array);
 
-// Frees unused memory
+// Frees unused memory: make array's capacity to be equal of it's size
 void dast_array_shrink(dast_array_t* array);
 
 // Reserve @size elements. If @size <= capacity - elements in array does nothing
-void dast_array_reserve(dast_array_t* array, dast_u64_t size);
+void dast_array_reserve(dast_array_t* array, unsigned long size);
 
-void          dast_array_copy_to(void* array, void* memory, dast_u64_t size);
-void          dast_array_deepcopy_to(void* array, void* memory, dast_u64_t size);
-dast_array_t* dast_array_copy(dast_array_t* array, dast_allocator_t* allocator);
-dast_array_t* dast_array_deepcopy(dast_array_t* array, dast_allocator_t* allocator);
+// Copy @array to @dst. Note: it is a shallow copying
+void dast_array_copy(dast_array_t* array, dast_array_t* dst);
 
-dast_u64_t dast_array_size(dast_array_t* array);
-dast_u64_t dast_array_obj_size(dast_array_t* array);
+// Copy @array to @dst. Also it copies all objcets too (invokes @cpy for each object)
+void dast_array_deepcopy(dast_array_t* array, dast_array_t* dst, void (*cpy)(void* src, void* dst));
 
-void  dast_array_clear(dast_array_t* array);
-void* dast_array_begin(dast_array_t* array);
-void* dast_array_end(dast_array_t* array);
-void* dast_array_index(dast_array_t* array, dast_u64_t index);
+// remove all objects from @array. Note: capacity remains the same
+void dast_array_clear(dast_array_t* array);
 
+// remove all objects from @array with invokinf @del on each object. Note: capacity remains the same
+void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj));
+
+// get first element
+void* dast_array_first(dast_array_t* array);
+
+// get last element
+void* dast_array_last(dast_array_t* array);
+
+// get i'th element
+void* dast_array_ith(dast_array_t* array, unsigned long index);
+
+// add @obj to the end of @array
 void dast_array_append(dast_array_t* array, void* obj);
-void dast_array_insert(dast_array_t* array, void* obj, dast_u64_t index);
-void dast_array_extend(dast_array_t* array, void* objs, dast_u64_t n);
 
-dast_u8_t dast_array_pop(dast_array_t* array, void* dst);
-dast_u8_t dast_array_remove(dast_array_t* array, dast_u64_t index, void* dst);
-dast_u8_t dast_array_replace(dast_array_t* array, void* obj, dast_u64_t index);
+// insert @obj at @index position in @array
+void dast_array_insert(dast_array_t* array, void* obj, unsigned long index);
 
+// append @n @objs to the end of @array
+void dast_array_extend(dast_array_t* array, void* objs, unsigned long n);
+
+// remove last object to @dst from @array. @dst can be NULL then nothing will copy to @dst
+void dast_array_pop(dast_array_t* array, void* dst);
+
+// remove object at a position @index to @dst from @array. @dst can be NULL then nothing will copy to @dst
+void dast_array_remove(dast_array_t* array, unsigned long index, void* dst);
+
+// replace an object in @array at the position @index by @obj
+void dast_array_replace(dast_array_t* array, void* obj, unsigned long index);
+
+// reverse elements in @array (a[0] swapped with a[n-1], a[1] swapped with a[n-2], ...)
+// where n - number of elements in @array
 void dast_array_reverse(dast_array_t* array);
 
-#endif /* __DAST_ARRAY_H__ */
+#endif // __DAST_ARRAY_H__

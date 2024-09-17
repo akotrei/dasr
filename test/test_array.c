@@ -342,18 +342,6 @@ void test_dast_array_reverse()
     dast_array_destroy(&array);
 }
 
-// void test_dast_array_copy()
-// {
-//     dast_array_t* array = dast_array_init(allocator, sizeof(int), dast_cpy_generic, dast_del_dummy);
-//     dast_array_t copied_array;
-//     dast_array_copy_to(array, &copied_array, sizeof(dast_array_t));
-
-//     -------------
-    
-
-//     dast_array_destroy(array);
-// }
-
 int main()
 {
     char alloc_mem[dast_allocator_std_sizeof()];

@@ -1,7 +1,7 @@
 #include "unity/unity.h"
 
 #include "utils/allocator_std.h"
-#include "array/array.h"
+#include "array.h"
 #include "utils/mem.h"
 
 #include <stdio.h>

@@ -7,7 +7,7 @@
 1. **array** (alike python list or c++ std::vector)
 2. **list** (alike c++ std::list)
 3. **set** (alike c++ std::unordered_set)
-4. **table** (alike c++ std::unordered_map)
+4. **map** (alike c++ std::unordered_map)
 5. **tree** (alike c++ std::map)
 
 ## Algorithms

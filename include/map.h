@@ -41,20 +41,18 @@ dast_map_t* dast_map_init(
     unsigned long     (*hash)(void* key),
     int               (*cmp)(void* key1, void* key2)
 );
-
 void dast_map_destroy(dast_map_t* map);
-
 void dast_map_copy(dast_map_t* map, dast_map_t* dst);
 void dast_map_deepcopy(dast_map_t* map, dast_map_t* dst, (*cpy_key)(void* src, void* dst), (*cpy_val)(void* src, void* dst));
 void dast_map_clear(dast_map_t* map);
 void dast_map_deepclear(dast_map_t* map, (*del_key)(void* obj), (*del_val)(void* obj));
-
-void* dast_map_get(dast_map_t* map, void* key);
+#define DAST_SLOT_KEY(slot) ((char*)(slot) + sizeof(dast_slot_t))
+#define DAST_SLOT_VALUE(map, slot) ((char*)(slot) + sizeof(dast_slot_t) + (map)->key_size)
+dast_slot_t* dast_map_get(dast_map_t* map, void* key);
 void dast_map_set(dast_map_t* map, void* key, void* value);
-void dast_map_del(dast_map_t* map, void* cursor);
-
+void dast_map_del(dast_map_t* map, dast_slot_t* slot);
 void* dast_map_cursor(dast_map_t* map);
-void* dast_map_next(dast_map_t* map, *cursor);
-void* dast_map_prev(dast_map_t* map, *cursor);
+void* dast_map_next(dast_map_t* map, dast_slot_t *cursor);
+void* dast_map_prev(dast_map_t* map, dast_slot_t *cursor);
 
 #endif /* __DAST_MAP_H__ */

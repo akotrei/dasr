@@ -47,13 +47,13 @@ void dast_array_clear(dast_array_t* array);
 void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj));
 
 // get first element
-void* dast_array_first(dast_array_t* array);
+#define DAST_ARRAY_FIRST(array) ((array)->data)
 
 // get last element
-void* dast_array_last(dast_array_t* array);
+#define DAST_ARRAY_LAST(array) ((array)->data + ((array)->elems - 1) * (array)->elem_size)
 
 // get i'th element
-void* dast_array_ith(dast_array_t* array, unsigned long index);
+#define DAST_ARRAY_ITH(array, index) ((array)->data + (index) * (array)->elem_size)
 
 // add @obj to the end of @array
 void dast_array_append(dast_array_t* array, void* obj);

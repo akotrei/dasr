@@ -40,42 +40,48 @@ void dast_list_clear(dast_list_t* list);
 // Remove all lements from @list and invoke @del on each one
 void dast_list_deepclear(dast_list_t* list, void (*del)(void* obj));
 
-// Get first element from @list, if @list is empty return NULL
-void* dast_list_first(dast_list_t* list);
+// Get first node from @list, if @list is empty return NULL
+// To extract user data use @DAST_LIST_NODE_ELEM
+#define DAST_LIST_FIRST(list) ((list)->head)
 
-// Get last element from @list, if @list is empty return NULL
-void* dast_list_last(dast_list_t* list);
+// Get last node from @list, if @list is empty return NULL
+// To extract user data use @DAST_LIST_NODE_ELEM
+#define DAST_LIST_LAST(list) ((list)->tail)
 
-// Get next element of @list that follows @cursor
-// @cursor should be a result of @dast_list_first, @dast_list_last, @dast_list_next,
-// and @dast_list_prev and not be a NULL
-void* dast_list_next(dast_list_t* list, void* cursor);
+// Get next node of a list that follows @cursor
+// @cursor should be a result of @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
+// and @DAST_LIST_PREV and not be a NULL
+#define DAST_LIST_NEXT(cursor) ((cursor)->next)
 
-// Get previous element of @cursor of @list i.e. that is before @cursor
-// @cursor should be a result of @dast_list_first, @dast_list_last, @dast_list_next,
-// and @dast_list_prev and not be a NULL
-void* dast_list_prev(dast_list_t* list, void* cursor);
+// Get previous node of @cursor of a list i.e. that is before @cursor
+// @cursor should be a result of  @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
+// and @DAST_LIST_PREV and not be a NULL
+#define DAST_LIST_PREV(cursor) ((cursor)->prev)
+
+// Get element from a node that is return by @DAST_LIST_FIRST, @DAST_LIST_LAST,
+// @DAST_LIST_NEXT, and @DAST_LIST_PREV
+#define DAST_NODE_ELEM(node) ((char*)(node) + sizeof(dast_node_t))
 
 // Append @obj to @list after @cursor. if @list is empty ignore @cursor
 // and just put @obj to @list, otherwise @cursor should be a result of
-// @dast_list_first, @dast_list_last, @dast_list_next,
-// and @dast_list_prev and not be a NULL
-void dast_list_append(dast_list_t* list, void* cursor, void* obj);
+// @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
+// and @DAST_LIST_PREV and not be a NULL
+void dast_list_append(dast_list_t* list, dast_node_t* cursor, void* obj);
 
 // Insert right before @cursor @obj to @list. if @list is empty ignore @cursor
 // and just put @obj to @list, otherwise @cursor should be a result of
-// @dast_list_first, @dast_list_last, @dast_list_next,
-// and @dast_list_prev and not be a NULL
-void dast_list_prepend(dast_list_t* list, void* cursor, void* obj);
+// @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
+// and @DAST_LIST_PREV and not be a NULL
+void dast_list_prepend(dast_list_t* list, dast_node_t* cursor, void* obj);
 
 // Replace @cursor by @obj in @list.
-// @cursor should be a result of @dast_list_first, @dast_list_last,
-// @dast_list_next, and @dast_list_prev and not be a NULL
-void dast_list_replace(dast_list_t* list, void* cursor, void* obj);
+// @cursor should be a result of @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
+// and @DAST_LIST_PREV and not be a NULL
+#define DAST_LIST_REPLACE(list, cursor, obj) (dast_cpy_generic((obj), DAST_NODE_ELEM((cursor)), (list)->elem_size))
 
-// Remove @cursor from @list @cursor should be a result of @dast_list_first,
-// @dast_list_last, @dast_list_next, and @dast_list_prev and not be a NULL.
+// Remove @cursor from @list @cursor should be a result of @DAST_LIST_FIRST,
+// @DAST_LIST_LAST, @DAST_LIST_NEXT, and @DAST_LIST_PREV and not be a NULL.
 // After removing @cursor can't be used as a cursor for any operation on @list
-void dast_list_remove(dast_list_t* list, void* cursor);
+void dast_list_remove(dast_list_t* list, dast_node_t* cursor);
 
-#endif /* __DAST_LIST_H__ */
+#endif // __DAST_LIST_H__

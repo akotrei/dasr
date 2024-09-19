@@ -112,7 +112,7 @@ void test_dast_array_copy()
     TEST_ASSERT(new_array.allocator == array.allocator);
     for (int i = 0; i < 10; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&new_array, i) == i);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&new_array, i) == i);
     }
 
     dast_array_destroy(&array);
@@ -137,7 +137,7 @@ void test_dast_array_deepcopy()
     TEST_ASSERT(new_array.allocator == array.allocator);
     for (int i = 0; i < 10; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&new_array, i) == i + 1);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&new_array, i) == i + 1);
     }
 
     dast_array_destroy(&array);
@@ -154,7 +154,7 @@ void test_dast_array_clear()
     }
 
     TEST_ASSERT(array.elems == 10);
-    dast_array_clear(&array);
+    DAST_ARRAY_CLEAR(&array);
     TEST_ASSERT(array.elems == 0);
 
     dast_array_destroy(&array);
@@ -186,9 +186,9 @@ void test_dast_array_first_last_ith()
     {
         dast_array_append(&array, &i);
     }
-    TEST_ASSERT(*(int*)dast_array_first(&array) == 0);
-    TEST_ASSERT(*(int*)dast_array_last(&array) == 2);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 1) == 1);
+    TEST_ASSERT(*(int*)DAST_ARRAY_FIRST(&array) == 0);
+    TEST_ASSERT(*(int*)DAST_ARRAY_LAST(&array) == 2);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 1) == 1);
 
     dast_array_destroy(&array);
 }
@@ -202,7 +202,7 @@ void test_dast_array_extend()
     dast_array_extend(&array, objs, 3);
     for (int i = 0; i < 3; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&array, i) == objs[i]);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, i) == objs[i]);
     }
     TEST_ASSERT(array.elems == 3);
 
@@ -210,7 +210,7 @@ void test_dast_array_extend()
     dast_array_extend(&array, objs, 3);
     for (int i = 3; i < 9; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&array, i) == i % 3 + 1);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, i) == i % 3 + 1);
     }
     TEST_ASSERT(array.elems == 9);
     
@@ -225,16 +225,16 @@ void test_dast_array_insert()
     int val = 12;
     dast_array_insert(&array, &val, 100);
     TEST_ASSERT(array.elems == 1);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 0) == val);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 0) == val);
 
     int val2 = 42;
     int val3 = 65;
     dast_array_insert(&array, &val2, 0);
     dast_array_insert(&array, &val3, 1);
     TEST_ASSERT(array.elems == 3);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 0) == val2);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 1) == val3);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 2) == val);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 0) == val2);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 1) == val3);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 2) == val);
 
     dast_array_destroy(&array);
 }
@@ -288,11 +288,11 @@ void test_dast_array_remove()
 
     for (int i = 0; i < 5; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&array, i) == i);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, i) == i);
     }
     for (int i = 5; i < 9; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&array, i) == i + 1);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, i) == i + 1);
     }
 
     dast_array_destroy(&array);
@@ -309,16 +309,16 @@ void test_dast_array_replace()
     }
 
     int dst = -5;
-    dast_array_replace(&array, &dst, 0);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 0) == dst);
+    DAST_ARRY_REPLACE(&array, &dst, 0);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 0) == dst);
     TEST_ASSERT(array.elems == 10);
 
-    dast_array_replace(&array, &dst, 5);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 5) == dst);
+    DAST_ARRY_REPLACE(&array, &dst, 5);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 5) == dst);
     TEST_ASSERT(array.elems == 10);
 
-    dast_array_replace(&array, &dst, 9);
-    TEST_ASSERT(*(int*)dast_array_ith(&array, 9) == dst);
+    DAST_ARRY_REPLACE(&array, &dst, 9);
+    TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 9) == dst);
     TEST_ASSERT(array.elems == 10);
 
     dast_array_destroy(&array);
@@ -336,7 +336,7 @@ void test_dast_array_reverse()
     dast_array_reverse(&array);
     for (int i = 0; i < 5; i++)
     {
-        TEST_ASSERT(*(int*)dast_array_ith(&array, i) == 4 - i);
+        TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, i) == 4 - i);
     }
 
     dast_array_destroy(&array);

@@ -73,8 +73,6 @@ void dast_array_deepcopy(dast_array_t* array, dast_array_t* dst, void (*cpy)(voi
     dst->allocator = array->allocator;
 }
 
-void dast_array_clear(dast_array_t* array) { array->elems = 0; }
-
 void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj))
 {
     unsigned long end = array->elems;
@@ -88,12 +86,6 @@ void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj))
     }
     array->elems = 0;
 }
-
-void* dast_array_first(dast_array_t* array) { return array->data; }
-
-void* dast_array_last(dast_array_t* array) { return array->data + (array->elems - 1) * array->elem_size; }
-
-void* dast_array_ith(dast_array_t* array, unsigned long index) { return array->data + index * array->elem_size; }
 
 void dast_array_append(dast_array_t* array, void* obj)
 {
@@ -169,11 +161,6 @@ void dast_array_remove(dast_array_t* array, unsigned long index, void* dst)
     }
     dast_move_generic(array->data + (index + 1) * elem_size, array->data + index * elem_size, bytes_to_copy);
     array->elems--;
-}
-
-void dast_array_replace(dast_array_t* array, void* obj, unsigned long index)
-{
-    dast_cpy_generic(obj, array->data + index * array->elem_size, array->elem_size);
 }
 
 void dast_array_reverse(dast_array_t* array)

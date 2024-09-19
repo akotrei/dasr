@@ -1,5 +1,4 @@
 #include "list.h"
-#include "utils/mem.h"
 
 
 void dast_list_init(dast_list_t* list, dast_allocator_t* allocator, int obj_size)

@@ -6,6 +6,7 @@
 #define __DAST_ARRAY_H__
 
 #include "interface/allocator.h"
+#include "utils/mem.h"
 
 #define DAST_ARRAY_GROW_FACTOR 2.0f
 #define DAST_ARRAY_INIT_SIZE 8
@@ -41,7 +42,7 @@ void dast_array_copy(dast_array_t* array, dast_array_t* dst);
 void dast_array_deepcopy(dast_array_t* array, dast_array_t* dst, void (*cpy)(void* src, void* dst));
 
 // remove all objects from @array. Note: capacity remains the same
-void dast_array_clear(dast_array_t* array);
+#define DAST_ARRAY_CLEAR(array) ((array)->elems = 0)
 
 // remove all objects from @array with invokinf @del on each object. Note: capacity remains the same
 void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj));
@@ -71,7 +72,7 @@ void dast_array_pop(dast_array_t* array, void* dst);
 void dast_array_remove(dast_array_t* array, unsigned long index, void* dst);
 
 // replace an object in @array at the position @index by @obj
-void dast_array_replace(dast_array_t* array, void* obj, unsigned long index);
+#define DAST_ARRY_REPLACE(array, obj, index) (dast_cpy_generic((obj), (array)->data + (index) * (array)->elem_size, (array)->elem_size))
 
 // reverse elements in @array (a[0] swapped with a[n-1], a[1] swapped with a[n-2], ...)
 // where n - number of elements in @array

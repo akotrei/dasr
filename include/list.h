@@ -2,6 +2,7 @@
 #define __DAST_LIST_H__
 
 #include "interface/allocator.h"
+#include "utils/mem.h"
 
 // memory laoyot of @dast_node_t type:
 // |--next--|--prev--|--value--|

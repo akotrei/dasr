@@ -51,13 +51,15 @@ void dast_map_copy(dast_map_t* map, dast_map_t* dst);
 
 // Copy @map to @dst. Also it copies all objcets too (invokes @cpy_key for each key and @cpy_val for each value)
 // Note: @dst supposed to be not initialized
-void dast_map_deepcopy(dast_map_t* map, dast_map_t* dst, (*cpy_key)(void* src, void* dst), (*cpy_val)(void* src, void* dst));
+void dast_map_deepcopy(
+    dast_map_t* map, dast_map_t* dst, void (*cpy_key)(void* src, void* dst), void (*cpy_val)(void* src, void* dst)
+);
 
 // remove all objects from @map
 void dast_map_clear(dast_map_t* map);
 
 // remove all objects from @map with invoking @del_key and @del_val on each key and value
-void dast_map_deepclear(dast_map_t* map, (*del_key)(void* obj), (*del_val)(void* obj));
+void dast_map_deepclear(dast_map_t* map, void (*del_key)(void* obj), void (*del_val)(void* obj));
 
 // Get key from a slote that is return by @dast_map_get. Note: @slote should not be 0
 #define DAST_SLOTE_KEY(slote) ((char*)(slote) + sizeof(dast_slote_t))

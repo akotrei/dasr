@@ -26,9 +26,11 @@ void dast_list_init(dast_list_t* list, dast_allocator_t* allocator, int obj_size
 void dast_list_destroy(dast_list_t* list);
 
 // Copy @list to @dst. Note: it is a shallow copying
+// Note: @dst supposed to be not initialized
 void dast_list_copy(dast_list_t* list, dast_list_t* dst);
 
 // Copy @list to @dst. Also it copies all objcets too (invokes @cpy for each object)
+// Note: @dst supposed to be not initialized
 void dast_list_deepcopy(dast_list_t* list, dast_list_t* dst, void (*cpy)(void* src, void* dst));
 
 // Reverse all elements in @list (a[0] <-> a[n-1], a[1] <-> a[n-2], ...)

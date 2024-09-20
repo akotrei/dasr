@@ -25,8 +25,7 @@ typedef struct _dast_array_t
 // @allocator - an allocator instance to manage all memory tasks inside @array
 void dast_array_init(dast_array_t* array, dast_allocator_t* allocator, int obj_size);
 
-// Deletes the array instance, should be used for such array that was created via @dast_array_init_on
-// Notes: invokes @del function from @dast_array_init_on for each objected in the array
+// Destroy @array and free memory that @array uses
 void dast_array_destroy(dast_array_t* array);
 
 // Frees unused memory: make array's capacity to be equal of it's size
@@ -36,15 +35,17 @@ void dast_array_shrink(dast_array_t* array);
 void dast_array_reserve(dast_array_t* array, unsigned long size);
 
 // Copy @array to @dst. Note: it is a shallow copying
+// Note: @dst supposed to be not initialized
 void dast_array_copy(dast_array_t* array, dast_array_t* dst);
 
 // Copy @array to @dst. Also it copies all objcets too (invokes @cpy for each object)
+// Note: @dst supposed to be not initialized
 void dast_array_deepcopy(dast_array_t* array, dast_array_t* dst, void (*cpy)(void* src, void* dst));
 
 // remove all objects from @array. Note: capacity remains the same
 #define DAST_ARRAY_CLEAR(array) ((array)->elems = 0)
 
-// remove all objects from @array with invokinf @del on each object. Note: capacity remains the same
+// remove all objects from @array with invoking @del on each object. Note: capacity remains the same
 void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj));
 
 // get first element

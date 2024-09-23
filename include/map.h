@@ -11,14 +11,14 @@
 #define DAST_MAP_MAX_LOAD 0.5f
 
 // memory laoyot of @dast_slote_t type:
-// dast_slote_t* slote -> |--hash--|--index--|--key--|--value--|
-typedef struct _dast_slote_t { unsigned long hash; long index; } dast_slote_t;
+// dast_slote_t* slote -> |--hash--|--key--|--value--|
+typedef struct _dast_slote_t { unsigned long hash; } dast_slote_t;
 
 typedef struct _dast_map_t
 {
     dast_allocator_t* allocator;
-    dast_array_t      slots;
-    long*             indices;
+    dast_array_t      buckets;
+    dast_array_t      non_empty_buckets_index;
     long              elems;
     long              capacity;
     unsigned long     (*hash_f)(void* key);
@@ -67,6 +67,9 @@ void dast_map_deepclear(dast_map_t* map, void (*del_key)(void* obj), void (*del_
 // Get value from a slote that is return by @dast_map_get. Note: @slote should not be 0
 #define DAST_SLOTE_VAL(map, slote) ((char*)(slote) + sizeof(dast_slote_t) + (map)->key_size)
 
+// Get size of a slote for @map
+#define DAST_MAP_SIZEOF_SLOTE(map) (sizeof(dast_slote_t) + (map)->key_size + (map)->val_size)
+
 // Get a slote by @key. If @key does not exist return 0
 dast_slote_t* dast_map_get(dast_map_t* map, void* key);
 
@@ -75,9 +78,12 @@ dast_slote_t* dast_map_get(dast_map_t* map, void* key);
 void dast_map_set(dast_map_t* map, void* key, void* value);
 
 // Delete @slote from @map, @slote should be a result of @dast_map_get, and not be 0
+// Also between @dast_map_get and @dast_map_del should not be any @map's modifications -
+// it may change @slote to be invalid
 void dast_map_del(dast_map_t* map, dast_slote_t* slote);
 
 // Get array of slots from @map
-#define DAST_MAP_SLOTS_ARRAY(map) (&((map)->slots))
+// The caller responsible for destroying of return array 
+dast_array_t* dast_map_slots(dast_map_t* map);
 
 #endif /* __DAST_MAP_H__ */

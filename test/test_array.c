@@ -244,21 +244,18 @@ void test_dast_array_pop()
     dast_array_t array;
     dast_array_init(&array, allocator, sizeof(int));
 
-    int dst = -1;    
     for (int i = 0; i < 1; i++)
     {
         dast_array_append(&array, &i);
     }
-    dast_array_pop(&array, &dst);
-    TEST_ASSERT(dst == 0);
+    DAST_ARRAY_POP(&array);
     TEST_ASSERT(array.elems == 0);
 
     for (int i = 0; i < 3; i++)
     {
         dast_array_append(&array, &i);
     }
-    dast_array_pop(&array, &dst);
-    TEST_ASSERT(dst == 2);
+    DAST_ARRAY_POP(&array);
     TEST_ASSERT(array.elems == 2);
 
     dast_array_destroy(&array);
@@ -309,15 +306,15 @@ void test_dast_array_replace()
     }
 
     int dst = -5;
-    DAST_ARRY_REPLACE(&array, &dst, 0);
+    DAST_ARRAY_REPLACE(&array, &dst, 0);
     TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 0) == dst);
     TEST_ASSERT(array.elems == 10);
 
-    DAST_ARRY_REPLACE(&array, &dst, 5);
+    DAST_ARRAY_REPLACE(&array, &dst, 5);
     TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 5) == dst);
     TEST_ASSERT(array.elems == 10);
 
-    DAST_ARRY_REPLACE(&array, &dst, 9);
+    DAST_ARRAY_REPLACE(&array, &dst, 9);
     TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&array, 9) == dst);
     TEST_ASSERT(array.elems == 10);
 

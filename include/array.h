@@ -49,13 +49,13 @@ void dast_array_deepcopy(dast_array_t* array, dast_array_t* dst, void (*cpy)(voi
 void dast_array_deepclear(dast_array_t* array, void (*del)(void* obj));
 
 // get first element
-#define DAST_ARRAY_FIRST(array) ((array)->data)
+#define DAST_ARRAY_FIRST(array) ((void*)((array)->data))
 
 // get last element
-#define DAST_ARRAY_LAST(array) ((array)->data + ((array)->elems - 1) * (array)->elem_size)
+#define DAST_ARRAY_LAST(array) ((void*)((array)->data + ((array)->elems - 1) * (array)->elem_size))
 
 // get i'th element
-#define DAST_ARRAY_ITH(array, index) ((array)->data + (index) * (array)->elem_size)
+#define DAST_ARRAY_ITH(array, index) ((void*)((array)->data + (index) * (array)->elem_size))
 
 // add @obj to the end of @array
 void dast_array_append(dast_array_t* array, void* obj);
@@ -67,13 +67,13 @@ void dast_array_insert(dast_array_t* array, void* obj, unsigned long index);
 void dast_array_extend(dast_array_t* array, void* objs, unsigned long n);
 
 // remove last object to @dst from @array. @dst can be NULL then nothing will copy to @dst
-void dast_array_pop(dast_array_t* array, void* dst);
+#define DAST_ARRAY_POP(array) ((array)->elems--)
 
 // remove object at a position @index to @dst from @array. @dst can be NULL then nothing will copy to @dst
 void dast_array_remove(dast_array_t* array, unsigned long index, void* dst);
 
 // replace an object in @array at the position @index by @obj
-#define DAST_ARRY_REPLACE(array, obj, index) (dast_cpy_generic((obj), (array)->data + (index) * (array)->elem_size, (array)->elem_size))
+#define DAST_ARRAY_REPLACE(array, obj, index) (dast_cpy_generic((obj), (array)->data + (index) * (array)->elem_size, (array)->elem_size))
 
 // reverse elements in @array (a[0] swapped with a[n-1], a[1] swapped with a[n-2], ...)
 // where n - number of elements in @array

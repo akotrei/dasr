@@ -141,15 +141,6 @@ void dast_array_extend(dast_array_t* array, void* objs, unsigned long n)
     array->elems += n;
 }
 
-void dast_array_pop(dast_array_t* array, void* dst)
-{
-    if (dst)
-    {
-        dast_cpy_generic(array->data + (array->elems - 1) * array->elem_size, dst, array->elem_size);
-    }
-    array->elems--;
-}
-
 void dast_array_remove(dast_array_t* array, unsigned long index, void* dst)
 {
     unsigned long elems = array->elems;

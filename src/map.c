@@ -203,13 +203,7 @@ void dast_map_set(dast_map_t* map, void* key, void* value)
                     DAST_ARRAY_REPLACE(&new_buckets, &new_slots_array, idx_to_put);
                     dast_array_append(&new_non_empty_buckets_index, &idx_to_put);
                 }
-                if (new_slots_array->elems == new_slots_array->capacity)
-                {
-                    dast_array_reserve(new_slots_array, new_slots_array->elems);
-                }
-                slots_array->elems++;
-                dast_slote_t* new_slote = DAST_ARRAY_LAST(slots_array);
-                dast_cpy_generic(&(slots[k]), DAST_SLOTE_KEY(new_slote), DAST_MAP_SIZEOF_SLOTE(map));
+                dast_array_append(new_slots_array, DAST_ARRAY_LAST(slots_array));
             }
             map->allocator->deallocate(map->allocator, slots_array);
         }

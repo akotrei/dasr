@@ -5,25 +5,23 @@
 #ifndef __DAST_ARRAY_H__
 #define __DAST_ARRAY_H__
 
-#include "interface/allocator.h"
-#include "utils/mem.h"
+#include "memory.h"
 
 #define DAST_ARRAY_GROW_FACTOR 2.0f
 #define DAST_ARRAY_INIT_SIZE 8
 
 typedef struct _dast_array_t
 {
-    dast_allocator_t* allocator;
-    char*             data;
-    unsigned long     elems;
-    unsigned long     capacity;
-    int               elem_size;
+    char*         data;
+    unsigned long elems;
+    unsigned long capacity;
+    int           elem_size;
 } dast_array_t;
 
 // Initialize an array instance on @array
 // @obj_size - size (in bytes) of objects that the array should hold
 // @allocator - an allocator instance to manage all memory tasks inside @array
-void dast_array_init(dast_array_t* array, dast_allocator_t* allocator, int obj_size);
+void dast_array_init(dast_array_t* array, int obj_size);
 
 // Destroy @array and free memory that @array uses
 void dast_array_destroy(dast_array_t* array);
@@ -73,7 +71,7 @@ void dast_array_extend(dast_array_t* array, void* objs, unsigned long n);
 void dast_array_remove(dast_array_t* array, unsigned long index, void* dst);
 
 // replace an object in @array at the position @index by @obj
-#define DAST_ARRAY_REPLACE(array, obj, index) (dast_cpy_generic((obj), (array)->data + (index) * (array)->elem_size, (array)->elem_size))
+#define DAST_ARRAY_REPLACE(array, obj, index) (DAST_MEMMOVE((array)->data + (index) * (array)->elem_size, (obj), (array)->elem_size))
 
 // reverse elements in @array (a[0] swapped with a[n-1], a[1] swapped with a[n-2], ...)
 // where n - number of elements in @array

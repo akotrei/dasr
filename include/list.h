@@ -1,8 +1,7 @@
 #ifndef __DAST_LIST_H__
 #define __DAST_LIST_H__
 
-#include "interface/allocator.h"
-#include "utils/mem.h"
+#include "memory.h"
 
 // memory laoyot of @dast_node_t type:
 // |--next--|--prev--|--value--|
@@ -11,7 +10,6 @@ typedef struct _dast_node_t { dast_node_t *next, *prev; } dast_node_t;
 
 typedef struct _dast_list_t
 {
-    dast_allocator_t* allocator;
     dast_node_t*      head;
     dast_node_t*      tail;
     unsigned long     elems;
@@ -19,8 +17,7 @@ typedef struct _dast_list_t
 } dast_list_t;
 
 // Initialize @list to hold elemtnts with @obj_size
-// @allocator is used to manage all internal memory usage
-void dast_list_init(dast_list_t* list, dast_allocator_t* allocator, int obj_size);
+void dast_list_init(dast_list_t* list, int obj_size);
 
 // Delete @list and free all memory that is used by @list
 void dast_list_destroy(dast_list_t* list);

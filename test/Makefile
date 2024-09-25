@@ -16,7 +16,7 @@ $(info $(TEXE))
 
 .PHONY: runtest
 runtest: $(TEXE)
-	$(foreach f, $^, ./$(f);)
+	$(filter-out &&END, $(foreach f, $^, ./$(f) &&)END)
 
 .PHONY: clean
 clean:

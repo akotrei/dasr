@@ -1,13 +1,8 @@
-#include "unity/unity.h"
-
-#include "utils/allocator_std.h"
-#include "array.h"
-#include "utils/mem.h"
-
 #include <stdio.h>
+#include <unity/unity.h>
 
+#include "array.h"
 
-dast_allocator_t* allocator;
 
 void setUp(void) {}
 
@@ -19,8 +14,7 @@ void int_pointer_inc(void* obj) { (**((int**)obj))++; }
 void test_dast_array_init_and_destroy()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, 10);
-    TEST_ASSERT(array.allocator == allocator);
+    dast_array_init(&array, 10);
     TEST_ASSERT(array.elem_size == 10);
     TEST_ASSERT(array.capacity == DAST_ARRAY_INIT_SIZE);
     TEST_ASSERT(array.elems == 0);
@@ -30,7 +24,7 @@ void test_dast_array_init_and_destroy()
 void test_dast_array_shrink_and_append()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
     int obj = 42;
     dast_array_shrink(&array);
     TEST_ASSERT(array.elems == 0);
@@ -58,7 +52,7 @@ void test_dast_array_shrink_and_append()
 void test_dast_array_reserve()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
     
     dast_array_reserve(&array, 2);
     TEST_ASSERT(array.elems == 0);
@@ -96,7 +90,7 @@ void test_dast_array_reserve()
 void test_dast_array_copy()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     for (int i = 0; i < 10; i++)
     {
@@ -109,7 +103,6 @@ void test_dast_array_copy()
     TEST_ASSERT(new_array.elems == array.elems);
     TEST_ASSERT(new_array.elem_size == array.elem_size);
     TEST_ASSERT(new_array.capacity == array.capacity);
-    TEST_ASSERT(new_array.allocator == array.allocator);
     for (int i = 0; i < 10; i++)
     {
         TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&new_array, i) == i);
@@ -121,7 +114,7 @@ void test_dast_array_copy()
 void test_dast_array_deepcopy()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     for (int i = 0; i < 10; i++)
     {
@@ -134,7 +127,6 @@ void test_dast_array_deepcopy()
     TEST_ASSERT(new_array.elems == array.elems);
     TEST_ASSERT(new_array.elem_size == array.elem_size);
     TEST_ASSERT(new_array.capacity == array.capacity);
-    TEST_ASSERT(new_array.allocator == array.allocator);
     for (int i = 0; i < 10; i++)
     {
         TEST_ASSERT(*(int*)DAST_ARRAY_ITH(&new_array, i) == i + 1);
@@ -146,7 +138,7 @@ void test_dast_array_deepcopy()
 void test_dast_array_clear()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
     
     for (int i = 0; i < 10; i++)
     {
@@ -163,7 +155,7 @@ void test_dast_array_clear()
 void test_dast_array_deepclear()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int*));
+    dast_array_init(&array, sizeof(int*));
     
     int v = 42;
     int* pv = &v;
@@ -180,7 +172,7 @@ void test_dast_array_deepclear()
 void test_dast_array_first_last_ith()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
     
     for (int i = 0; i < 3; i++)
     {
@@ -196,7 +188,7 @@ void test_dast_array_first_last_ith()
 void test_dast_array_extend()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
     
     int objs[] = {1, 2, 3};
     dast_array_extend(&array, objs, 3);
@@ -220,7 +212,7 @@ void test_dast_array_extend()
 void test_dast_array_insert()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     int val = 12;
     dast_array_insert(&array, &val, 100);
@@ -242,7 +234,7 @@ void test_dast_array_insert()
 void test_dast_array_pop()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     for (int i = 0; i < 1; i++)
     {
@@ -264,7 +256,7 @@ void test_dast_array_pop()
 void test_dast_array_remove()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     int dst = -1;    
     for (int i = 0; i < 1; i++)
@@ -298,7 +290,7 @@ void test_dast_array_remove()
 void test_dast_array_replace()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     for (int i = 0; i < 10; i++)
     {
@@ -324,7 +316,7 @@ void test_dast_array_replace()
 void test_dast_array_reverse()
 {
     dast_array_t array;
-    dast_array_init(&array, allocator, sizeof(int));
+    dast_array_init(&array, sizeof(int));
 
     for (int i = 0; i < 5; i++)
     {
@@ -341,9 +333,6 @@ void test_dast_array_reverse()
 
 int main()
 {
-    char alloc_mem[dast_allocator_std_sizeof()];
-    allocator = dast_allocator_std_init(alloc_mem);
-
     UNITY_BEGIN();
     RUN_TEST(test_dast_array_init_and_destroy);
     RUN_TEST(test_dast_array_shrink_and_append);

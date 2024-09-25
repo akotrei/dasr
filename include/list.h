@@ -10,10 +10,10 @@ typedef struct _dast_node_t { dast_node_t *next, *prev; } dast_node_t;
 
 typedef struct _dast_list_t
 {
-    dast_node_t*      head;
-    dast_node_t*      tail;
-    unsigned long     elems;
-    int               elem_size;
+    dast_node_t*  head;
+    dast_node_t*  tail;
+    unsigned long elems;
+    int           elem_size;
 } dast_list_t;
 
 // Initialize @list to hold elemtnts with @obj_size
@@ -77,7 +77,7 @@ void dast_list_prepend(dast_list_t* list, dast_node_t* cursor, void* obj);
 // Replace @cursor by @obj in @list.
 // @cursor should be a result of @DAST_LIST_FIRST, @DAST_LIST_LAST, @DAST_LIST_NEXT,
 // and @DAST_LIST_PREV and not be a NULL
-#define DAST_LIST_REPLACE(list, cursor, obj) (dast_cpy_generic((obj), DAST_NODE_ELEM((cursor)), (list)->elem_size))
+#define DAST_LIST_REPLACE(list, cursor, obj) (DAST_MEMCPY(DAST_NODE_ELEM((cursor)), (obj), (list)->elem_size))
 
 // Remove @cursor from @list @cursor should be a result of @DAST_LIST_FIRST,
 // @DAST_LIST_LAST, @DAST_LIST_NEXT, and @DAST_LIST_PREV and not be a NULL.

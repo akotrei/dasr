@@ -1,11 +1,6 @@
-#include "unity/unity.h"
+#include <unity/unity.h>
 
 #include "list.h"
-#include "utils/allocator_std.h"
-#include "utils/mem.h"
-
-
-dast_allocator_t* allocator;
 
 void setUp(void) {}
 
@@ -17,8 +12,7 @@ void int_pointer_inc(void* obj) { (**((int**)obj))++; }
 void test_dast_list_init_and_destroy()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, 10);
-    TEST_ASSERT(list.allocator == allocator);
+    dast_list_init(&list, 10);
     TEST_ASSERT(list.elem_size == 10);
     TEST_ASSERT(list.elems == 0);
 
@@ -30,7 +24,7 @@ void test_dast_list_copy_append()
     dast_list_t list;
     dast_list_t new_list;
 
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     for (int i = 42; i < 45; i++)
     {
@@ -69,7 +63,7 @@ void test_test_dast_list_deepcopy()
     dast_list_t list;
     dast_list_t new_list;
 
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     for (int i = 0; i < 3; i++)
     {
@@ -92,7 +86,7 @@ void test_test_dast_list_deepcopy()
 void test_dast_list_reverse_append()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     dast_list_reverse(&list);
     TEST_ASSERT(list.head == 0);
@@ -119,7 +113,7 @@ void test_dast_list_reverse_append()
 void test_dast_list_clear()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     dast_list_clear(&list);
     TEST_ASSERT(list.elems == 0);
@@ -135,7 +129,7 @@ void test_dast_list_clear()
 void test_dast_list_deepclear()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int*));
+    dast_list_init(&list, sizeof(int*));
 
     dast_list_clear(&list);
     TEST_ASSERT(list.elems == 0);
@@ -153,7 +147,7 @@ void test_dast_list_deepclear()
 void test_dast_list_first_last()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     TEST_ASSERT(DAST_LIST_FIRST(&list) == 0);
     TEST_ASSERT(DAST_LIST_LAST(&list) == 0);
@@ -175,7 +169,7 @@ void test_dast_list_first_last()
 void test_dast_list_next_prev()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     int i = 0;
     for (dast_node_t* node = DAST_LIST_FIRST(&list); node; node = DAST_LIST_NEXT(node))
@@ -216,7 +210,7 @@ void test_dast_list_next_prev()
 void test_dast_list_prepend()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     for (int i = 0; i < 3; i++)
     {
@@ -237,7 +231,7 @@ void test_dast_list_prepend()
 void test_dast_list_replace()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     for (int i = 0; i < 3; i++)
     {
@@ -264,7 +258,7 @@ void test_dast_list_replace()
 void test_dast_list_remove()
 {
     dast_list_t list;
-    dast_list_init(&list, allocator, sizeof(int));
+    dast_list_init(&list, sizeof(int));
 
     int a = 1;
     int b = 2;
@@ -300,9 +294,6 @@ void test_dast_list_remove()
 
 int main()
 {
-    char alloc_mem[dast_allocator_std_sizeof()];
-    allocator = dast_allocator_std_init(alloc_mem);
-
     UNITY_BEGIN();
     RUN_TEST(test_dast_list_init_and_destroy);
     RUN_TEST(test_dast_list_copy_append);

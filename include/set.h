@@ -65,7 +65,7 @@ void dast_set_add(dast_set_t* set, void* key);
 void dast_set_del(dast_set_t* set, dast_slote_t* slote);
 
 // Get array of slots from @map
-// The Caller is responsible for deleting return slots
+// The caller is responsible for deleting return slots
 dast_array_t* dast_set_slots(dast_set_t* set);
 
 #endif // __DAST_MAP_H__

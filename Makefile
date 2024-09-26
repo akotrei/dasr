@@ -6,7 +6,7 @@ CFLAGS ?= -Wall -O2 -fPIC
 override CFLAGS += -I./include
 BUILD ?= build
 
-CSRC = src/array.c src/list.c src/map.c
+CSRC = src/array.c src/list.c src/set.c
 COBJ = $(addprefix $(BUILD)/, $(CSRC:.c=.o))
 DEPS = $(COBJ:.o=.d)
 

@@ -1,6 +1,6 @@
 #ifndef __DAST_QSORT_H__
 #define __DAST_QSORT_H__
 
-unsigned long dast_qsort(void* array, unsigned long elems, unsigned long elem_size, int (*cmp_f)(void* o1, void* o2));
+void dast_qsort(void* array, long elems, int elem_size, int (*cmp)(void* l, void* r));
 
-#endif /* __DAST_QSORT_H__ */
+#endif // __DAST_QSORT_H__

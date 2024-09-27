@@ -28,7 +28,7 @@ void test_dast_set_init_and_destroy()
     dast_set_destroy(&set);
 }
 
-void test_dast_set_set()
+void test_dast_set_add_and_slots()
 {
     dast_set_t set;
     dast_set_init(&set, sizeof(int), hash_int, cmp_int);
@@ -38,23 +38,47 @@ void test_dast_set_set()
     TEST_ASSERT(set.elems == 1);
     TEST_ASSERT(set.capacity == 8);
 
-    for (int i = 2; i < 2000001; i++)
+    dast_array_t* slots = dast_set_slots(&set);
+
+    TEST_ASSERT(slots->elems == 1);
+    for (int i = 0; i < slots->elems; i++)
+    {
+        TEST_ASSERT(*(int*)DAST_SLOTE_KEY(DAST_ARRAY_ITH(slots, i)) == 1);
+    }
+    dast_array_destroy(slots);
+
+    for (int i = 0; i < 4; i++)
     {
         dast_set_add(&set, &i);
     }
-    TEST_ASSERT(set.elems == 2000000);
-    TEST_ASSERT(set.capacity == 4194304);
 
-    int max_in_bucket = 0;
-    for (int i = 0; i < set.capacity; i++)
+    slots = dast_set_slots(&set);
+    TEST_ASSERT(set.elems == 4);
+    TEST_ASSERT(slots->elems == 4);
+    for (int i = 0; i < slots->elems; i++)
     {
-        if (set.buckets_info[i].elems > max_in_bucket)
-        {
-            max_in_bucket = set.buckets_info[i].elems;
-        }
-        // printf("i: %d; cap: %lu; elems: %lu; h: %lu\n", i, map.buckets_info[i].capacity, map.buckets_info[i].elems, hash_int(&i) % map.capacity);
+
+        TEST_ASSERT(*(int*)DAST_SLOTE_KEY(DAST_ARRAY_ITH(slots, i)) == i);
     }
-    printf("max_in_bucket: %d\n", max_in_bucket);
+    dast_array_destroy(slots);
+
+    int a = 16;
+    dast_set_add(&set, &a);
+
+    a = 17;
+    dast_set_add(&set, &a);
+
+    int expected[] = {0, 16, 1, 17, 2, 3};
+    slots = dast_set_slots(&set);
+    TEST_ASSERT(set.elems == 6);
+    TEST_ASSERT(slots->elems == 6);
+    for (int i = 0; i < slots->elems; i++)
+    {
+
+        TEST_ASSERT(*(int*)DAST_SLOTE_KEY(DAST_ARRAY_ITH(slots, i)) == expected[i]);
+    }
+    dast_array_destroy(slots);
+    DAST_FREE(slots);
 
     dast_set_destroy(&set);
 }
@@ -63,6 +87,6 @@ int main()
 {
     UNITY_BEGIN();
     RUN_TEST(test_dast_set_init_and_destroy);
-    RUN_TEST(test_dast_set_set);
+    RUN_TEST(test_dast_set_add_and_slots_and_key);
     return UNITY_END();
 }

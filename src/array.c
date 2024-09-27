@@ -1,6 +1,5 @@
 #include "array.h"
 
-
 void dast_array_init(dast_array_t* array, int obj_size)
 {
     array->data = DAST_MALLOC(obj_size * DAST_ARRAY_INIT_SIZE);

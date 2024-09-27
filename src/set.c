@@ -257,7 +257,7 @@ dast_array_t* dast_set_slots(dast_set_t* set)
     int           slot_size = sizeof(dast_slote_t) + set->key_size;
 
     dast_array_t* array_slots = DAST_MALLOC(sizeof(dast_array_t));
-    dast_array_init(array_slots, sizeof(slot_size));
+    dast_array_init(array_slots, slot_size);
 
     dast_slote_t**      buckets = set->buckets;
     dast_bucket_info_t* buckets_info = set->buckets_info;

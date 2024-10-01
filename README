@@ -1,6 +1,6 @@
 Fudamental Data Structures And Algorithms For ANSI C
 
-1. array - dynamical array 
+1. array - dynamical array that grows automatically as elements are added
 2. list - double linked list
 3. set - hash table with array-based chaining
 4. tree - red black tree

@@ -18,7 +18,13 @@ void dast_set_init(dast_set_t* set, int key_size, unsigned long (*hash)(void* k)
 
 void dast_set_destroy(dast_set_t* set)
 {
-    DAST_FREE(set->buckets);
+    unsigned long  capacity = set->capacity;
+    dast_slote_t** buckets = set->buckets;
+    for (unsigned long i = 0; i < capacity; i++)
+    {
+        DAST_FREE(buckets[i]);
+    }
+    DAST_FREE(buckets);
     DAST_FREE(set->buckets_info);
 }
 
@@ -73,12 +79,12 @@ void dast_set_deepcopy(dast_set_t* set, dast_set_t* dst, void (*cpy)(void* src, 
             unsigned long elems_in_bucket = src_buckets_info[i].elems;
             dast_slote_t* src_slots = src_buckets[i];
             dast_slote_t* dst_slots = dst_buckets[i];
-            for (unsigned long k = 0; i < elems_in_bucket; k++)
+            for (unsigned long k = 0; k < elems_in_bucket; k++)
             {
                 dast_slote_t* src_slote = (dast_slote_t*)((char*)src_slots + slot_size*k);
                 dast_slote_t* dst_slote = (dast_slote_t*)((char*)dst_slots + slot_size*k);
                 dst_slote->hash = src_slote->hash;
-                cpy((char*)dst_slote + sizeof(dast_slote_t), (char*)src_slote + sizeof(dast_slote_t));
+                cpy((char*)src_slote + sizeof(dast_slote_t), (char*)dst_slote + sizeof(dast_slote_t));
             }
         }
         else
@@ -119,7 +125,7 @@ void dast_set_deepclear(dast_set_t* set, void (*del)(void* k))
     {
         unsigned long elems_in_bucket = buckets_info[i].elems;
         dast_slote_t* slots = buckets[i];
-        for (unsigned long k = 0; i < elems_in_bucket; k++)
+        for (unsigned long k = 0; k < elems_in_bucket; k++)
         {
             dast_slote_t* slote = (dast_slote_t*)((char*)slots + slot_size*k);
             del((char*)slote + sizeof(dast_slote_t));
@@ -240,8 +246,8 @@ void dast_set_del(dast_set_t* set, dast_slote_t* slote)
     int           slot_size = sizeof(dast_slote_t) + key_size;
     unsigned long bucket_index = slote->hash % set->capacity;
     dast_slote_t* slots = (set->buckets)[bucket_index];
-    unsigned long k = ((char*)slots - (char*)slote) / slot_size;
-    unsigned long l = set->buckets_info[bucket_index].elems - 1;
+    unsigned long k = (((char*)slote - (char*)slots)) / slot_size;
+    unsigned long l = (set->buckets_info)[bucket_index].elems - 1;
     if (k < l)
     {
         dast_slote_t* last_slote = (dast_slote_t*)((char*)slots + slot_size*l);
@@ -251,12 +257,11 @@ void dast_set_del(dast_set_t* set, dast_slote_t* slote)
     set->elems--;
 }
 
-dast_array_t* dast_set_slots(dast_set_t* set)
+void dast_set_slots(dast_set_t* set, dast_array_t* array_slots)
 {
     unsigned long capacity = set->capacity;
     int           slot_size = sizeof(dast_slote_t) + set->key_size;
 
-    dast_array_t* array_slots = DAST_MALLOC(sizeof(dast_array_t));
     dast_array_init(array_slots, slot_size);
 
     dast_slote_t**      buckets = set->buckets;
@@ -271,5 +276,4 @@ dast_array_t* dast_set_slots(dast_set_t* set)
         }
         dast_array_extend(array_slots, slots, buckets_info[i].elems);
     }
-    return array_slots;
 }

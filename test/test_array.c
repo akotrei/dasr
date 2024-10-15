@@ -109,6 +109,7 @@ void test_dast_array_copy()
     }
 
     dast_array_destroy(&array);
+    dast_array_destroy(&new_array);
 }
 
 void test_dast_array_deepcopy()
@@ -133,6 +134,7 @@ void test_dast_array_deepcopy()
     }
 
     dast_array_destroy(&array);
+    dast_array_destroy(&new_array);
 }
 
 void test_dast_array_clear()

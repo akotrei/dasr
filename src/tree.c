@@ -40,7 +40,7 @@ void dast_tree_init(dast_tree_t* tree, int obj_size, int (*cmp)(void* l, void* r
     tree->root = 0;
     tree->elems = 0;
     tree->cmp = cmp;
-    tree->obj_size = 0;
+    tree->obj_size = obj_size;
 }
 
 void dast_tree_destroy(dast_tree_t* tree)
@@ -79,12 +79,122 @@ void dast_tree_destroy(dast_tree_t* tree)
 
 void dast_tree_copy(dast_tree_t* tree, dast_tree_t* dst)
 {
+    int          obj_size = tree->obj_size;
+    dast_knot_t* tmp;
 
+    dst->root = 0;
+    dst->elems = tree->elem_size;
+    dst->cmp = tree->cmp;
+    dst->obj_size = obj_size;
+    
+
+    if (tree->root == 0)
+    {
+        return;
+    }
+
+    dast_knot_t* knot_src = tree->root;
+    dast_knot_t* knot_dst = dst->root;
+
+    dst->root = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+    DAST_MEMCPY((char*)knot_dst + sizeof(dast_knot_t), (char*)knot_src + sizeof(dast_knot_t));
+    knot_dst->left = 0;
+    knot_dst->right = 0;
+    knot_dst->parent = 0;
+    knot_dst->is_black = 1;
+
+    while (knot_src)
+    {
+        if (knot_src->left && knot_dst->left == 0)
+        {
+            tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->left) + sizeof(dast_knot_t));
+            tmp->left = 0;
+            tmp->right = 0;
+            tmp->parent = knot_dst;
+            knot_dst->left = tmp;
+
+            knot_dst = knot_dst->left;
+            knot_src = knot_src->left;
+        }
+        else if (knot_src->right && knot_dst->right == 0)
+        {
+            tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->right) + sizeof(dast_knot_t));
+            tmp->left = 0;
+            tmp->right = 0;
+            tmp->parent = knot_dst;
+            knot_dst->right = tmp;
+
+            knot_dst = knot_dst->right;
+            knot_src = knot_src->right;
+        }
+        else
+        {
+            knot_dst = knot_dst->parent;
+            knot_src = knot_src->parent;
+        }
+    }
 }
 
 void dast_tree_deepcopy(dast_tree_t* tree, dast_tree_t* dst, void (*cpy)(void* src, void* dst))
 {
+    int          obj_size = tree->obj_size;
+    dast_knot_t* tmp;
 
+    dst->root = 0;
+    dst->elems = tree->elem_size;
+    dst->cmp = tree->cmp;
+    dst->obj_size = obj_size;
+    
+
+    if (tree->root == 0)
+    {
+        return;
+    }
+
+    dast_knot_t* knot_src = tree->root;
+    dast_knot_t* knot_dst = dst->root;
+
+    dst->root = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+    DAST_MEMCPY((char*)knot_dst + sizeof(dast_knot_t), (char*)knot_src + sizeof(dast_knot_t));
+    knot_dst->left = 0;
+    knot_dst->right = 0;
+    knot_dst->parent = 0;
+    knot_dst->is_black = 1;
+
+    while (knot_src)
+    {
+        if (knot_src->left && knot_dst->left == 0)
+        {
+            tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+            cpy((char*)(knot_src->left) + sizeof(dast_knot_t), (char*)tmp + sizeof(dast_knot_t));
+            tmp->left = 0;
+            tmp->right = 0;
+            tmp->parent = knot_dst;
+            knot_dst->left = tmp;
+
+            knot_dst = knot_dst->left;
+            knot_src = knot_src->left;
+        }
+        else if (knot_src->right && knot_dst->right == 0)
+        {
+            tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
+            cpy(((char*)(knot_src->right) + sizeof(dast_knot_t), (char*)tmp + sizeof(dast_knot_t));
+            tmp->left = 0;
+            tmp->right = 0;
+            tmp->parent = knot_dst;
+            knot_dst->right = tmp;
+
+            knot_dst = knot_dst->right;
+            knot_src = knot_src->right;
+        }
+        else
+        {
+            knot_dst = knot_dst->parent;
+            knot_src = knot_src->parent;
+        }
+    }
 }
 
 void dast_tree_clear(dast_tree_t* tree)
@@ -95,11 +205,42 @@ void dast_tree_clear(dast_tree_t* tree)
 
 void dast_tree_deepclear(dast_tree_t* tree, void (*del)(void* obj))
 {
+    dast_knot_t** glob = &(tree->root);
+    dast_knot_t*  curr;
 
+    while (*glob)
+    {
+        curr = *glob;
+        if ((*glob = curr->left))
+        {
+        }
+        else if ((*glob = curr->right))
+        {
+        }
+        else if (curr->parent)
+        {
+            *glob = curr->parent;
+            if (curr->parent->left == curr)
+            {
+                (*glob)->left = 0;
+            }
+            else
+            {
+                (*glob)->right = 0;
+            }
+            del((char*)curr + sizeof(dast_knot_t));
+            DAST_FREE(curr);
+        }
+        else
+        {
+            del((char*)curr + sizeof(dast_knot_t));
+            DAST_FREE(curr);
+        }
+    }
+    tree->elems = 0;
 }
 
 unsigned long dast_tree_height(dast_tree_t* tree) { return dast_knot_height(tree->root); }
-
 
 void dast_tree_add(dast_tree_t* tree, void* obj)
 {

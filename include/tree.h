@@ -48,8 +48,8 @@ void dast_tree_deepclear(dast_tree_t* tree, void (*del)(void* obj));
 // Returns height of the @tree
 unsigned long dast_tree_height(dast_tree_t* tree);
 
-// Get object of @knot; @knot should be note 0
-#define DAST_KNOT_OBJ(knot) ((char*)(knot) + sizeof(dast_knot_t))
+// Get object of @knot; @knot should not be 0
+#define DAST_KNOT_KEY(knot) ((char*)(knot) + sizeof(dast_knot_t))
 
 // Adds @obj to the @tree
 void dast_tree_add(dast_tree_t* tree, void* obj);

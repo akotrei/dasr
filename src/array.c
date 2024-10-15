@@ -159,4 +159,5 @@ void dast_array_reverse(dast_array_t* array)
         start++;
         end--;
     }
+    DAST_FREE(tmp);
 }

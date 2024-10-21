@@ -25,7 +25,7 @@ typedef struct _dast_tree_t
 } dast_tree_t;
 
 // Initialise @tree
-// @obj_size is size of objects in bytes that the tree holds;
+// @obj_size is size of objects in bytes that @tree holds;
 // @cmp is a compare function that is used to add new element, it accepts two
 // objects a and b and returns 1 if a > b, 0 if a = b and -1 if a < b;
 void dast_tree_init(dast_tree_t* tree, int obj_size, int (*cmp)(void* l, void* r));

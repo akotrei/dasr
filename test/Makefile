@@ -8,7 +8,7 @@ CFLAGS ?= -Wall -O2
 override CFLAGS += -I../include
 BUILD ?= ../build
 
-TSRC = test_array.c test_list.c test_set.c
+TSRC = test_array.c test_list.c test_set.c test_tree.c
 TOBJ = $(TSRC:.c=.o)
 TEXE = $(TOBJ:.o=.x)
 

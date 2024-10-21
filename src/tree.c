@@ -83,7 +83,7 @@ void dast_tree_copy(dast_tree_t* tree, dast_tree_t* dst)
     dast_knot_t* tmp;
 
     dst->root = 0;
-    dst->elems = tree->elem_size;
+    dst->elems = tree->elems;
     dst->cmp = tree->cmp;
     dst->obj_size = obj_size;
     
@@ -97,7 +97,7 @@ void dast_tree_copy(dast_tree_t* tree, dast_tree_t* dst)
     dast_knot_t* knot_dst = dst->root;
 
     dst->root = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
-    DAST_MEMCPY((char*)knot_dst + sizeof(dast_knot_t), (char*)knot_src + sizeof(dast_knot_t));
+    DAST_MEMCPY((char*)knot_dst + sizeof(dast_knot_t), (char*)knot_src + sizeof(dast_knot_t), obj_size);
     knot_dst->left = 0;
     knot_dst->right = 0;
     knot_dst->parent = 0;
@@ -108,7 +108,7 @@ void dast_tree_copy(dast_tree_t* tree, dast_tree_t* dst)
         if (knot_src->left && knot_dst->left == 0)
         {
             tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
-            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->left) + sizeof(dast_knot_t));
+            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->left) + sizeof(dast_knot_t), obj_size);
             tmp->left = 0;
             tmp->right = 0;
             tmp->parent = knot_dst;
@@ -120,7 +120,7 @@ void dast_tree_copy(dast_tree_t* tree, dast_tree_t* dst)
         else if (knot_src->right && knot_dst->right == 0)
         {
             tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
-            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->right) + sizeof(dast_knot_t));
+            DAST_MEMCPY((char*)tmp + sizeof(dast_knot_t), (char*)(knot_src->right) + sizeof(dast_knot_t), obj_size);
             tmp->left = 0;
             tmp->right = 0;
             tmp->parent = knot_dst;
@@ -143,7 +143,7 @@ void dast_tree_deepcopy(dast_tree_t* tree, dast_tree_t* dst, void (*cpy)(void* s
     dast_knot_t* tmp;
 
     dst->root = 0;
-    dst->elems = tree->elem_size;
+    dst->elems = tree->elems;
     dst->cmp = tree->cmp;
     dst->obj_size = obj_size;
     
@@ -157,7 +157,7 @@ void dast_tree_deepcopy(dast_tree_t* tree, dast_tree_t* dst, void (*cpy)(void* s
     dast_knot_t* knot_dst = dst->root;
 
     dst->root = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
-    DAST_MEMCPY((char*)knot_dst + sizeof(dast_knot_t), (char*)knot_src + sizeof(dast_knot_t));
+    cpy((char*)knot_src + sizeof(dast_knot_t), (char*)knot_dst + sizeof(dast_knot_t));
     knot_dst->left = 0;
     knot_dst->right = 0;
     knot_dst->parent = 0;
@@ -180,7 +180,7 @@ void dast_tree_deepcopy(dast_tree_t* tree, dast_tree_t* dst, void (*cpy)(void* s
         else if (knot_src->right && knot_dst->right == 0)
         {
             tmp = DAST_MALLOC(sizeof(dast_knot_t) + obj_size);
-            cpy(((char*)(knot_src->right) + sizeof(dast_knot_t), (char*)tmp + sizeof(dast_knot_t));
+            cpy((char*)(knot_src->right) + sizeof(dast_knot_t), (char*)tmp + sizeof(dast_knot_t));
             tmp->left = 0;
             tmp->right = 0;
             tmp->parent = knot_dst;

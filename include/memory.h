@@ -5,6 +5,7 @@
 #include <string.h>
 
 #define DAST_MALLOC  malloc
+#define DAST_CALLOC  calloc
 #define DAST_REALLOC realloc
 #define DAST_FREE    free
 

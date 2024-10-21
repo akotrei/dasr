@@ -1,5 +1,4 @@
 #include "set.h"
-#include <stdio.h>
 
 void dast_set_init(dast_set_t* set, int key_size, unsigned long (*hash)(void* k), int (*cmp)(void* l, void* r))
 {

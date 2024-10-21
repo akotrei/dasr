@@ -1,6 +1,14 @@
 Fudamental DAta STructures And Algorithms For ANSI C
 
-1. array - dynamic array
-2. list - double linked list
-3. set - hash table with array-based chaining
-4. tree - red black tree
+Data Structures:
+
+    1. array - dynamic array
+    2. list - double linked list
+    3. set - hash table with array-based chaining
+    4. tree - red black tree
+
+Algorithms:
+
+    1. qsort - quick sort
+    2. msort - merge sort
+    3. bsearch - binary search

@@ -11,9 +11,9 @@ static unsigned long dast_knot_height(dast_knot_t* knot);
 //
 //          [p]                    [p]      *
 //           |                      |       *
-//          [y]                    [x]      *
+//          [x]                    [y]      *
 //         /   \       --->       /   \     *
-//       [a]   [x]              [y]   [c]   *
+//       [a]   [y]              [x]   [c]   *
 //            /   \            /   \        *
 //          [b]   [c]        [a]   [b]      *
 //
@@ -23,9 +23,9 @@ static void dast_tree_rotate_left(dast_tree_t* tree, dast_knot_t* x);
 //
 //          [p]                    [p]      *
 //           |                      |       *
-//          [x]                    [y]      *
+//          [y]                    [x]      *
 //         /   \       <---       /   \     *
-//       [a]   [y]              [x]   [c]   *
+//       [a]   [x]              [y]   [c]   *
 //            /   \            /   \        *
 //          [b]   [c]        [a]   [b]      *
 //
